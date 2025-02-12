@@ -18,17 +18,26 @@ if __name__ == '__main__':
 
         # Seed Customers
         customer1 = Customer(
-            name='Lunaxx',
-            email=fake.email()
+            username='Lunaxx',
+            email=fake.email(),
+            
         )
+        customer1.password = 'Ddddddddd!'
+
         customer2 = Customer(
-            name='Darya',
-            email=fake.email()
+            username='Darya',
+            email=fake.email(),
+            
         )
+        customer2.password = 'Ddddddddd!'
+
         customer3 = Customer(
-            name='Pardis',
-            email=fake.email()
+            username='Pardis',
+            email=fake.email(),
+            
         )
+        customer3.password = 'Ddddddddd!'
+
         db.session.add(customer1)
         db.session.add(customer2)
         db.session.add(customer3)
