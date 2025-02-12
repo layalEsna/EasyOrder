@@ -71,13 +71,38 @@ class Signup(Resource):
         except Exception as e:
             return make_response(jsonify({'error': f'Internal error: {e}'}), 500)
         
+class Login(Resource):
+    
+    def post(self):
+        try:
+            data = request.get_json()
+            username = data.get('username')
+            password = data.get('password')
+
+            if not all([username, password]):
+                return jsonify({'error': 'All the fields are required.'}), 400
+
+            customer = Customer.query.filter(Customer.username == username).first()
+
+            if not customer or not customer.check_password(password):
+                return jsonify({'error': 'Wrong username or password.'}), 401
+
+            session['customer_id'] = customer.id
+            session.permanent = True
+            return make_response(jsonify({'message': 'Successful login!', 'id': customer.id, 'username': customer.username}), 200)
+
+        except Exception as e:
+            return make_response(jsonify({'error': f'Internal error: {e}'}), 500)
+        
+
+
 
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
 
 api.add_resource(Signup, '/signup')
-# api.add_resource(Login, '/login')
+api.add_resource(Login, '/login')
 # api.add_resource(CheckSession, '/check_session')
 api.add_resource(Items, '/items')
 
