@@ -14,11 +14,16 @@ class Customer(db.Model, SerializerMixin):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
 
+   
+    orders = db.relationship('Order', back_populates='customer', cascade='all, delete-orphan')
 class Item(db.Model, SerializerMixin):
     __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
+
+   
+    Orders = db.relationship('Order', back_populates='item', cascade='all, delete-orphan')
 
 class Order(db.Model, SerializerMixin):
     __tablename__ = 'orders'
@@ -27,3 +32,5 @@ class Order(db.Model, SerializerMixin):
     item_id = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)
     quantity = db.Column(db.Integer, default=1, nullable=False)
 
+    customer = db.relationship('Customer', back_populates='orders')
+    item = db.relationship('Item', back_populates='orders')
