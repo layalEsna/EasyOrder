@@ -3,9 +3,10 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import validates, relationship
 
+
 import re
 
-from config import db
+from config import db, bcrypt
 
 
 
@@ -13,19 +14,37 @@ from config import db
 
 class Customer(db.Model, SerializerMixin):
     __tablename__ = 'customers'
-    serialize_only = ('id', 'name', 'email')
+    serialize_only = ('id', 'username', 'email')
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(100), nullable=False)
+    _hash_password = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
 
-    @validates('name')
-    def validate_name(self,key, name):
-        if not name or not isinstance(name, str):
-            raise ValueError('Name is required and must be a string.')
-        if len(name) < 5 or len(name) > 100:
-            raise ValueError('Name must be between 5 and 100 characters inclusive.')
-        return name
+    @validates('username')
+    def validate_username(self,key, username):
+        if not username or not isinstance(username, str):
+            raise ValueError('username is required and must be a string.')
+        if len(username) < 5 or len(username) > 100:
+            raise ValueError('Username must be between 5 and 100 characters inclusive.')
+        return username
+    
+    @property
+    def password(self):
+        raise ArithmeticError('password is read only')
+    
+    @password.setter
+    def password(self, password):
+        pattern = re.compile(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*]).{8,}$')
+        if not password or not isinstance(password, str):
+            raise ValueError('password is required and must be a string')
+        if not pattern.match(password):
+            raise ValueError('password must be at least 8 characters and includes at least one upper case, one lower case letter and one symbol')
+        self._hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self._hash_password, password)
+
     
     @validates('email')
     def validate_email(self,key, email):
@@ -37,10 +56,9 @@ class Customer(db.Model, SerializerMixin):
         if not re.match(email_reg, email):
             raise ValueError('Invalid email format.')
         return email
-
-
    
     orders = db.relationship('Order', back_populates='customer', cascade='all, delete-orphan')
+
 class Item(db.Model, SerializerMixin):
     __tablename__ = 'items'
     serialize_only = ('id', 'name', 'price')
