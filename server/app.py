@@ -20,7 +20,7 @@ class Items(Resource):
     def get(self):
         items = Item.query.all()
         if not items:
-            return jsonify({'message': []}), 200
+            return make_response({'message': []}), 200
         
         all_items = [
             {
