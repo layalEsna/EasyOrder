@@ -4,7 +4,7 @@
 
 # Remote library imports
 
-from flask import request, make_response, jsonify
+from flask import request, make_response, jsonify, session
 from flask_restful import Resource
 
 # Local imports
@@ -31,14 +31,58 @@ class Items(Resource):
             for item in items
         ]
         return all_items, 200
+    
+class Signup(Resource):
+    
+    def post(self):
+
+        try:
+            data = request.get_json()
+            username = data.get('username')
+            email = data.get('email')
+            password = data.get('password')
+            confirm_password = data.get('confirm_password')
+
+            if not all([username, password, confirm_password, email]):
+                return make_response(jsonify({'error': 'All the fields are required.'}), 400)
+            if password != confirm_password:
+                return make_response(jsonify({'error': 'Password not match.'}), 400)
+            if Customer.query.filter(Customer.username==username).first():
+                return make_response(jsonify({'error': 'Username already exists.'}), 400)
+            if Customer.query.filter(Customer.email == email).first():
+                return make_response(jsonify({'error': 'Email already exists.'}), 400)
+
+            
+            new_customer = Customer(
+                username = username,
+                password = password,
+                email = email
+            )
+
+            db.session.add(new_customer)
+            db.session.commit()
+
+            
+            session['customer_id'] = new_customer.id
+            session.permanent = True 
+
+            return make_response(jsonify({'id': new_customer.id, 'username': new_customer.username, 'email': new_customer.email}), 201)
+
+        except Exception as e:
+            return make_response(jsonify({'error': f'Internal error: {e}'}), 500)
+        
 
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
 
-
+api.add_resource(Signup, '/signup')
+# api.add_resource(Login, '/login')
+# api.add_resource(CheckSession, '/check_session')
 api.add_resource(Items, '/items')
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
 
+# python server/app.py
