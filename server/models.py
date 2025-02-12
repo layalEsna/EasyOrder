@@ -40,3 +40,4 @@ class Order(db.Model, SerializerMixin):
 
     customer = db.relationship('Customer', back_populates='orders')
     item = db.relationship('Item', back_populates='orders')
+# 
