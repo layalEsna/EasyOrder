@@ -24,6 +24,7 @@ class Items(Resource):
         
         all_items = [
             {
+                'id': item.id,
                 'name': item.name,
                 'price': item.price
             }
