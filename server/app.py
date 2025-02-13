@@ -116,10 +116,29 @@ class CheckSession(Resource):
           
             return {'message': '401: Not Authorized'}, 401
         
+
+# class CheckSession(Resource):
+#     def get(self):
+#         if 'customer_id' in session:
+#             customer = Customer.query.get(session['customer_id'])
+#             return {'username': customer.username, 'id': customer.id}
+#         return {'error': 'Unauthorized'}, 401
+
+        
 class Logout(Resource):
     def delete(self):
         session.pop('customer_id', None)
         return '', 204
+    
+
+class ItemById(Resource):
+    def get(self, item_id):
+
+        item = Item.query.get(item_id)
+        if not item:
+            return {'error': 'Item not found.'}, 404
+        return item.to_dict(), 200
+
         
 @app.route('/')
 def index():
@@ -130,6 +149,7 @@ api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Items, '/items')
 api.add_resource(Logout, '/logout')
+api.add_resource(ItemById, '/items/<int:item_id>')
 
 
 if __name__ == '__main__':
