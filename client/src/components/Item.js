@@ -29,7 +29,7 @@ function Item() {
                     <div key={item.id}>
                         <h4>{item.name}</h4>
                         <p>{item.price}</p>
-                        <button onClick=''>Buy</button>
+                        <button onClick={()=>navigate(`/items/${item.id}`)}>Buy</button>
                     </div>
                 ))):(
                     <div>loading...</div>

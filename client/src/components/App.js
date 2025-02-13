@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Item from "./Item";
 import Login from "./Login";
+import ItemDetail from "./ItemDetail";
 
 // import Signup from "./Signup";
 
@@ -12,6 +13,7 @@ function App() {
       <Router>
         <Routes>
           <Route path='/items' element={<Item/> } />
+          <Route path='/items/:item_id' element={<ItemDetail/> } />
           <Route path='/login' element={<Login/> } />
           {/* <Route path='/signup' element={<Signup/> } /> */}
         </Routes>
