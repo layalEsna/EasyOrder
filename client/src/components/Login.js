@@ -59,14 +59,12 @@ function Login({onLogin}) {
                         // throw new Error(data.error || "Login failed.")
                         throw new Error('Login failed.')
                     }
-                    // sessionStorage.setItem('username', values.username)
-                    // localStorage.setItem('username', values.username)
-                    onLogin(data.user)
-                    // navigate('/sellers')
+                    
+                    navigate('/items')
                 })
                 .catch(e => {
                     setErrorMessage(e.message)
-                    // console.error(`Internal error: ${e.message}`)
+                   
                 })
 
         })

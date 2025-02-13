@@ -1,20 +1,57 @@
-#!/usr/bin/env python3
 
-# Standard library imports
+###################################
+# #!/usr/bin/env python3
 
-# Remote library imports
+# # Standard library imports
 
-from flask import request, make_response, jsonify, session
-from flask_restful import Resource
+# # Remote library imports
 
-# Local imports
-from config import app, db, api
-# Add your model imports
-from models import Customer, Item, Order
+# from flask import request, make_response, jsonify, session
+# from flask_restful import Resource
+
+# # Local imports
+# from config import app, db, api
+
+# # Add your model imports
+# from models import Customer, Item, Order
+
+
+
+# # Views go here!
+##########################################
+from flask import Flask, request, make_response, jsonify, session
+from flask_cors import CORS
+from flask_migrate import Migrate
+from flask_restful import Api, Resource
+
+
+
+
+from config import Config  # Import config class
+from models import db, bcrypt  # Now importing from models instead of defining in app.py
+
+# Instantiate app
+app = Flask(__name__)
+app.config.from_object(Config)
+
+# Initialize extensions
+db.init_app(app)
+bcrypt.init_app(app)
+migrate = Migrate(app, db)
+
+# Instantiate REST API
+api = Api(app)
+
+# Instantiate CORS
+CORS(app)
+
+# Import models after initializing db to prevent circular imports
+from models import Customer, Item, Order  # Importing here avoids circular imports
 
 
 
 # Views go here!
+
 
 class Items(Resource):
     def get(self):
@@ -138,7 +175,70 @@ class ItemById(Resource):
         if not item:
             return {'error': 'Item not found.'}, 404
         return item.to_dict(), 200
+    
+class CustomerById(Resource):
+    def get(self, customer_id):
+        customer_by_id = session.get('customer_id')
+        if customer_by_id:
+            print(f"Session customer_id: {customer_by_id}")
+            customer = Customer.query.filter(Customer.id == customer_id).first()
 
+            if customer:
+                print(f"Found customer: {customer.username}")
+                return {'username': customer.username}, 200
+            else:
+                return {'message': 'Customer not found'}, 404
+
+        else:
+            return {'message': 'No customer found in session'}, 401
+
+class Cart(Resource):
+    def post(self):
+
+        customer_id = session.get('customer_id')
+        if not customer_id:
+            return {'message': 'You need to be logged in to add items to your cart.'}, 401
+
+        data = request.get_json()
+        quantity = data.get('quantity')
+        item_id = data.get('item_id')
+        if not all([quantity, item_id]):
+            return {'message': 'Quantity and item_id are required.'}, 400
+        item = Item.query.get(item_id)
+        if not item:
+            return {'message': 'Item not found'}, 404
+
+        order_item = Order.query.filter(Order.customer_id == customer_id, item_id == item_id).first()
+        if order_item:
+            order_item.quantity += quantity
+        else:
+            order_item = Order(customer_id=customer_id, quantity=quantity, item_id=item_id)
+            db.session.add(order_item)
+        db.session.commit()
+
+        return {'message': 'Item added to cart successfully.'}, 201
+
+    def get(self):
+        customer_id = session.get('customer_id')
+        if not customer_id:
+            return {'error': 'You need to be logged in to view your cart.'}, 401
+        
+        cart_items = Order.query.filter(Order.customer_id == customer_id).all()
+        if not cart_items:
+            return {'message': 'Your cart is empty.'}, 200
+        cart_data = [
+            {
+                'quantity': order.quantity,
+                'selected_item': {
+                    'name': order.item.name,
+                    'price': order.item.price,
+                }
+            }
+            for order in cart_items
+        ]
+
+        return cart_data, 200
+        
         
 @app.route('/')
 def index():
@@ -150,6 +250,8 @@ api.add_resource(CheckSession, '/check_session')
 api.add_resource(Items, '/items')
 api.add_resource(Logout, '/logout')
 api.add_resource(ItemById, '/items/<int:item_id>')
+api.add_resource(CustomerById, '/customer/<int:customer_id>')
+api.add_resource(Cart, '/cart')
 
 
 if __name__ == '__main__':
