@@ -78,7 +78,7 @@ function Login({onLogin}) {
 
             <form onSubmit={formik.handleSubmit}>
                 <div>
-                    <label htmlFor='username'>user name:</label>
+                    <label htmlFor='username'>username:</label>
                     <input
                         id='username'
                         type='text'

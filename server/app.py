@@ -116,6 +116,11 @@ class CheckSession(Resource):
           
             return {'message': '401: Not Authorized'}, 401
         
+class Logout(Resource):
+    def delete(self):
+        session.pop('customer_id', None)
+        return '', 204
+        
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
@@ -124,6 +129,7 @@ api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Items, '/items')
+api.add_resource(Logout, '/logout')
 
 
 if __name__ == '__main__':
