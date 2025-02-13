@@ -80,19 +80,20 @@ class Login(Resource):
             password = data.get('password')
 
             if not all([username, password]):
-                return jsonify({'error': 'All the fields are required.'}), 400
+                return {'error': 'All the fields are required.'}, 400
 
             customer = Customer.query.filter(Customer.username == username).first()
 
             if not customer or not customer.check_password(password):
-                return jsonify({'error': 'Wrong username or password.'}), 401
+                return {'error': 'Wrong username or password.'}, 401
 
             session['customer_id'] = customer.id
             session.permanent = True
-            return make_response(jsonify({'message': 'Successful login!', 'id': customer.id, 'username': customer.username}), 200)
+            return {'message': 'Successful login!', 'id': customer.id, 'username': customer.username}, 200
 
         except Exception as e:
-            return make_response(jsonify({'error': f'Internal error: {e}'}), 500)
+            return {'error': 'Internal server error'}, 500
+
         
 
 
