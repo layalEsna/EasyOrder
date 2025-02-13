@@ -96,14 +96,32 @@ class Login(Resource):
         
 
 
-
+class CheckSession(Resource):
+    def get(self):
+        
+        customer_id = session.get('customer_id')
+        
+        if customer_id:
+            
+            customer = Customer.query.filter(Customer.id == customer_id).first()
+            
+            if customer:
+               
+                return {'customer': customer.to_dict()}, 200
+            else:
+              
+                return {'message': 'customer not found'}, 404
+        else:
+          
+            return {'message': '401: Not Authorized'}, 401
+        
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
 
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
-# api.add_resource(CheckSession, '/check_session')
+api.add_resource(CheckSession, '/check_session')
 api.add_resource(Items, '/items')
 
 
