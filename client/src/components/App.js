@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Item from "./Item";
 import Login from "./Login";
 import ItemDetail from "./ItemDetail";
@@ -29,13 +29,20 @@ function App() {
     .catch(e => console.error(e))
   }, [])
 
- 
+  function ConditionNavbar({customer}) {
+   
+    const location = useLocation()
+    const hiddenNavBar = location.pathname == '/login' || location.pathname == '/logout'
+    
+    return hiddenNavBar ? null : <NavBar customer={customer}/>
+
+ }
 
   return (
     <div>
       
       <Router>
-      <NavBar customer={customer}/>
+      <ConditionNavbar customer={customer}/>
         <Routes>
           <Route path='/items' element={<Item customer={customer}/> } />
           <Route path='/items/:item_id' element={<ItemDetail customer={customer}/> } />
@@ -49,6 +56,14 @@ function App() {
       </Router>
     </div>
   )
+//   function ConditionNavbar({customer}) {
+   
+//     location = useLocation()
+//     const hiddenNavBar = location.pathname == '/login' || location.pathname == '/logout'
+    
+//     hiddenNavBar ? null : <NavBar customer={customer}/>
+
+//  }
 }
 
 export default App;

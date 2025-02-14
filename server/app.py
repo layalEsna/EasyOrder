@@ -260,7 +260,7 @@ api.add_resource(Logout, '/logout')
 api.add_resource(ItemById, '/items/<int:item_id>')
 api.add_resource(CustomerById, '/customer/<int:customer_id>')
 api.add_resource(Cart, '/cart')
-api.add_resource(Logout, '/logout')
+
 
 
 if __name__ == '__main__':
