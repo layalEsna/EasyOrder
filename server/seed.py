@@ -10,39 +10,24 @@ from faker import Faker
 from app import app
 from models import db, Customer, Item, Order
 
-
 if __name__ == '__main__':
     fake = Faker()
     with app.app_context():
         print("Starting seed...")
+        db.drop_all()
+        db.create_all()
 
         # Seed Customers
-        customer1 = Customer(
-            username='Lunaxx',
-            email=fake.email(),
-            
-        )
+        customer1 = Customer(username='Lunaxx', email=fake.email(),)
         customer1.password = 'Ddddddddd!'
 
-        customer2 = Customer(
-            username='Darya',
-            email=fake.email(),
-            
-        )
+        customer2 = Customer(username='Darya', email=fake.email(),)
         customer2.password = 'Ddddddddd!'
 
-        customer3 = Customer(
-            username='Pardis',
-            email=fake.email(),
-            
-        )
+        customer3 = Customer(username='Pardis', email=fake.email(),)
         customer3.password = 'Ddddddddd!'
 
-        customer4 = Customer(
-            username='Arshia',
-            email=fake.email(),
-            
-        )
+        customer4 = Customer(username='Arshia', email=fake.email(),)
         customer4.password = 'Ddddddddd!'
 
         db.session.add(customer1)
@@ -51,28 +36,22 @@ if __name__ == '__main__':
         db.session.add(customer4)
         db.session.commit()
 
-        # Seed Items
-        item1 = Item(
-            name='Laptop',
-            price=randint(500, 2000)
-        )
-        item2 = Item(
-            name='Smartphone',
-            price=randint(100, 1500)
-        )
-        item3 = Item(
-            name='Headphones',
-            price=randint(50, 300)
-        )
-        item4 = Item(
-            name='Smartwatch',
-            price=randint(100, 800)
-        )
+        # Seed Items (Add each item only once)
+        item1 = Item(name='Laptop', price=randint(500, 2000))
+        item2 = Item(name='Smartphone', price=randint(100, 1500))
+        item3 = Item(name='Headphones', price=randint(50, 300))
+        item4 = Item(name='Smartwatch', price=randint(100, 800))
+
         db.session.add(item1)
         db.session.add(item2)
         db.session.add(item3)
         db.session.add(item4)
         db.session.commit()
+
+        # If you want to create orders, use `Order` model here
+
+        print("Seeding complete!")
+
 
         # Seed Orders
         # order1 = Order(

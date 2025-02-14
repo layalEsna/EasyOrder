@@ -6,11 +6,13 @@ import ItemDetail from "./ItemDetail";
 import Cart from "./Cart";
 import Confirmation from "./Confirmation";
 
-// import Signup from "./Signup";
+import Signup from "./Signup";
 
 function App() {
 
   const [customer, setCustomer] = useState(null)
+  
+
   useEffect(() => {
     fetch('/check_session')
       .then(res => {
@@ -26,6 +28,8 @@ function App() {
     .catch(e => console.error(e))
   }, [])
 
+ 
+
   return (
     <div>
       
@@ -36,7 +40,7 @@ function App() {
           <Route path='/login' element={<Login setCustomer={setCustomer}/> } />
           <Route path='/cart' element={<Cart customer={customer}/> } />
           <Route path="/confirmation" element={<Confirmation />} />
-          {/* <Route path='/signup' element={<Signup/> } /> */}
+          <Route path='/signup' element={<Signup setCustomer={setCustomer}/> } />
         </Routes>
 
       </Router>
