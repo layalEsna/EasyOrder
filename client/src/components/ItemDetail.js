@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useFormik } from "formik"
 
-function ItemDetail() {
+function ItemDetail({customer}) {
     const navigate = useNavigate() 
     const { item_id } = useParams()
     const [item, setItem] = useState(null)
@@ -61,6 +61,8 @@ function ItemDetail() {
 
     return (
         <div>
+            <h2>{customer && customer.username ? customer.username : "Guest"}</h2>
+
             <h2>{item.name}</h2>
             <p>Price: ${item.price.toFixed(2)}</p>
 

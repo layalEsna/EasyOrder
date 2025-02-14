@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 
 
-function Cart() {
+function Cart({customer}) {
 
     const [items, setItems] = useState([])
     const navigate = useNavigate()
@@ -30,9 +30,7 @@ function Cart() {
 
     return (
         <div>
-            <h2>Your Cart</h2>
-
-            console.log(items)
+            <h2>Your Cart {customer && customer.username ? customer.username : "Guest"}</h2>
 
             {items.length > 0 ? (
                 
@@ -47,7 +45,7 @@ function Cart() {
                 ))
             ) : ''
             }
-            <button onClick={() => navigate('/checkout')}>Check out</button>
+            <button onClick={() => navigate('/confirmation')}>Checkout</button>
         </div>
     )
 }

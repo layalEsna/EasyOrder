@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 // Successful login
 
-function Login({onLogin}) {
+function Login({setCustomer}) {
 
     const [errorMessage, setErrorMessage] = useState('')
 
@@ -55,12 +55,14 @@ function Login({onLogin}) {
 
                 .then((data) => {
                     console.log('login data', data)
-                    if (!data.message) {
-                        // throw new Error(data.error || "Login failed.")
-                        throw new Error('Login failed.')
+                    if (data) {
+                        setCustomer(data)
+                        navigate('/items')
                     }
+                    else {
+                        throw new Error('Login failed.')
+                    }                    
                     
-                    navigate('/items')
                 })
                 .catch(e => {
                     setErrorMessage(e.message)

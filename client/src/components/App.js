@@ -4,6 +4,7 @@ import Item from "./Item";
 import Login from "./Login";
 import ItemDetail from "./ItemDetail";
 import Cart from "./Cart";
+import Confirmation from "./Confirmation";
 
 // import Signup from "./Signup";
 
@@ -19,21 +20,22 @@ function App() {
         return res.json()
     })
       .then(data => {
-        if(data.customer){
-      setCustomer(data)}
+        if(data.customer || data){
+      setCustomer(data.customer || data)}
     })
     .catch(e => console.error(e))
   }, [])
 
   return (
     <div>
-      <h1>Welcome to Easy Order</h1>
+      
       <Router>
         <Routes>
-          <Route path='/items' element={<Item/> } />
-          <Route path='/items/:item_id' element={<ItemDetail/> } />
-          <Route path='/login' element={<Login/> } />
-          <Route path='/cart' element={<Cart/> } />
+          <Route path='/items' element={<Item customer={customer}/> } />
+          <Route path='/items/:item_id' element={<ItemDetail customer={customer}/> } />
+          <Route path='/login' element={<Login setCustomer={setCustomer}/> } />
+          <Route path='/cart' element={<Cart customer={customer}/> } />
+          <Route path="/confirmation" element={<Confirmation />} />
           {/* <Route path='/signup' element={<Signup/> } /> */}
         </Routes>
 

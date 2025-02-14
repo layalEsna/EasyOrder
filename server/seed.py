@@ -38,9 +38,17 @@ if __name__ == '__main__':
         )
         customer3.password = 'Ddddddddd!'
 
+        customer4 = Customer(
+            username='Arshia',
+            email=fake.email(),
+            
+        )
+        customer4.password = 'Ddddddddd!'
+
         db.session.add(customer1)
         db.session.add(customer2)
         db.session.add(customer3)
+        db.session.add(customer4)
         db.session.commit()
 
         # Seed Items
@@ -67,30 +75,30 @@ if __name__ == '__main__':
         db.session.commit()
 
         # Seed Orders
-        order1 = Order(
-            customer_id=customer1.id,
-            item_id=item1.id,
-            quantity=randint(1, 5)
-        )
-        order2 = Order(
-            customer_id=customer2.id,
-            item_id=item2.id,
-            quantity=randint(1, 3)
-        )
-        order3 = Order(
-            customer_id=customer3.id,
-            item_id=item3.id,
-            quantity=randint(1, 4)
-        )
-        order4 = Order(
-            customer_id=customer1.id,
-            item_id=item4.id,
-            quantity=randint(1, 2)
-        )
-        db.session.add(order1)
-        db.session.add(order2)
-        db.session.add(order3)
-        db.session.add(order4)
-        db.session.commit()
+        # order1 = Order(
+        #     customer_id=customer1.id,
+        #     item_id=item1.id,
+        #     quantity=randint(1, 5)
+        # )
+        # order2 = Order(
+        #     customer_id=customer2.id,
+        #     item_id=item2.id,
+        #     quantity=randint(1, 3)
+        # )
+        # order3 = Order(
+        #     customer_id=customer3.id,
+        #     item_id=item3.id,
+        #     quantity=randint(1, 4)
+        # )
+        # order4 = Order(
+        #     customer_id=customer1.id,
+        #     item_id=item4.id,
+        #     quantity=randint(1, 2)
+        # )
+        # db.session.add(order1)
+        # db.session.add(order2)
+        # db.session.add(order3)
+        # db.session.add(order4)
+        # db.session.commit()
 
         print("Seeding complete!")
