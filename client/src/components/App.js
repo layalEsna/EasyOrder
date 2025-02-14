@@ -56,14 +56,7 @@ function App() {
       </Router>
     </div>
   )
-//   function ConditionNavbar({customer}) {
-   
-//     location = useLocation()
-//     const hiddenNavBar = location.pathname == '/login' || location.pathname == '/logout'
-    
-//     hiddenNavBar ? null : <NavBar customer={customer}/>
 
-//  }
 }
 
 export default App;

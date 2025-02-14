@@ -193,12 +193,13 @@ class CustomerById(Resource):
             return {'message': 'No customer found in session'}, 401
 
 class Cart(Resource):
+
     def post(self):
 
         customer_id = session.get('customer_id')
         if not customer_id:
-            return {'message': 'You need to be logged in to add items to your cart.'}, 401
-
+            return {'message': 'You need to be logged in.'}, 401
+        
         data = request.get_json()
         quantity = data.get('quantity')
         item_id = data.get('item_id')
@@ -207,16 +208,13 @@ class Cart(Resource):
         item = Item.query.get(item_id)
         if not item:
             return {'message': 'Item not found'}, 404
-
-        order_item = Order.query.filter(Order.customer_id == customer_id, item_id == item_id).first()
-        if order_item:
-            order_item.quantity += quantity
-        else:
-            order_item = Order(customer_id=customer_id, quantity=quantity, item_id=item_id)
-            db.session.add(order_item)
+        order_item = Order(customer_id=customer_id, quantity=quantity, item_id=item_id)
+        db.session.add(order_item)
+        
         db.session.commit()
 
         return {'message': 'Item added to cart successfully.'}, 201
+
 
     def get(self):
         customer_id = session.get('customer_id')
