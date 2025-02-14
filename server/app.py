@@ -238,6 +238,14 @@ class Cart(Resource):
         ]
 
         return cart_data, 200
+    
+class Logout(Resource):
+    def delete(self):
+         if 'customer_id' in session:
+             session.pop('customer_id', None)
+             return {'messa': 'Successful logout.'}, 200
+         return {'error': 'No active session found.'}, 400
+
         
         
 @app.route('/')
@@ -252,6 +260,7 @@ api.add_resource(Logout, '/logout')
 api.add_resource(ItemById, '/items/<int:item_id>')
 api.add_resource(CustomerById, '/customer/<int:customer_id>')
 api.add_resource(Cart, '/cart')
+api.add_resource(Logout, '/logout')
 
 
 if __name__ == '__main__':
