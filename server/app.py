@@ -49,7 +49,6 @@ CORS(app)
 from models import Customer, Item, Order  # Importing here avoids circular imports
 
 
-
 # Views go here!
 
 
@@ -244,17 +243,32 @@ class Logout(Resource):
              return {'messa': 'Successful logout.'}, 200
          return {'error': 'No active session found.'}, 400
     
-class Checkout(Resource):
-    def delete(self):
+# class Checkout(Resource):
+#     def delete(self):
 
+#         customer_id = session.get('customer_id')
+#         if not customer_id:
+#             return {'error': 'You need to be logged in to checkout.'}, 401
+#         Order.query.filter(Order.customer_id == customer_id).delete()
+#         db.session.commit()
+#         return {'message': 'Checkout successful. Cart cleared.'}, 200
+
+
+
+class Checkout(Resource):
+    def post(self):
         customer_id = session.get('customer_id')
         if not customer_id:
-            return {'error': 'You need to be logged in to checkout.'}, 401
+            return {'error': 'You must be logged in to checkout.'}
+        orders = Order.query.filter(Order.customer_id == customer_id).all()
+        if not orders:
+            return {'message': 'Your cart is empty.'}, 200
         Order.query.filter(Order.customer_id == customer_id).delete()
         db.session.commit()
-        return {'message': 'Checkout successful. Cart cleared.'}, 200
+        return {'message': 'Checkout successful.'}, 200
+        
 
-class EditDeleteItem(Resource):
+class EditOrder(Resource):
 
     def get(self, order_id):
 
@@ -285,8 +299,11 @@ class EditDeleteItem(Resource):
         db.session.commit()
 
         return order.to_dict(), 200
+
+class DeleteOrder(Resource):
     
     def delete(self, order_id):
+        print("Session data on DELETE request:", session)
 
         customer_id = session.get('customer_id')
         if not customer_id:
@@ -295,6 +312,8 @@ class EditDeleteItem(Resource):
         order = Order.query.filter(Order.id == order_id, Order.customer_id == customer_id).first()
         if not order:
             return {'error': 'Order not found.'}, 404
+        
+
         db.session.delete(order)
         db.session.commit()
 
@@ -318,7 +337,11 @@ api.add_resource(ItemById, '/items/<int:item_id>')
 api.add_resource(CustomerById, '/customer/<int:customer_id>')
 api.add_resource(Cart, '/cart')
 api.add_resource(Checkout, '/checkout')
-api.add_resource(EditDeleteItem, '/cart/<int:order_id>')
+# api.add_resource(EditOrder, '/cart/<int:order_id>')
+# api.add_resource(DeleteOrder, '/cart/<int:order_id>')
+
+api.add_resource(EditOrder, '/cart/<int:order_id>/edit')
+api.add_resource(DeleteOrder, '/cart/<int:order_id>/delete')
 
 
 
