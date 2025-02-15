@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup"
@@ -8,12 +8,26 @@ function Edit() {
 
     const { order_id } = useParams()
     const navigate = useNavigate()
-
+    const [order, setOrder] = useState(null)
+    
+    useEffect(() => {
+        fetch(`/cart/${order_id}`)
+            .then(res => {
+                if (!res.ok) {
+                throw new Error('Failed to fetch data.')
+                }return res.json()
+        })
+            .then(data => {
+                console.log(data)
+                setOrder(data)
+        })
+        .catch(e => console.error(e))
+    }, [order_id])
 
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
-            quantity: ''
+            quantity: order.quantity
         },
 
         validationSchema: Yup.object({

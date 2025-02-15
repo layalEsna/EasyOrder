@@ -8,6 +8,7 @@ import Confirmation from "./Confirmation";
 
 import Signup from "./Signup";
 import NavBar from "./NavBar";
+import Edit from "./Edit";
 
 function App() {
 
@@ -51,7 +52,7 @@ function App() {
           <Route path="/confirmation" element={<Confirmation />} />
           <Route path="/navbar" element={<NavBar customer={customer}/>} />
           <Route path='/signup' element={<Signup setCustomer={setCustomer}/> } />
-          {/* <Route path='/checkout' element={<Signup setCustomer={setCustomer}/> } /> */}
+          <Route path='/cart/:order_id' element={<Edit customer={customer}/> } />
         </Routes>
 
       </Router>

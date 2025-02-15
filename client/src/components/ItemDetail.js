@@ -88,6 +88,10 @@ function ItemDetail({customer}) {
                     <option value='5'>5</option>
                     
                 </select>
+                {formik.errors.quantity && formik.touched.quantity && (
+                    <div className="error">{formik.errors.quantity}</div>
+                )}
+
 
                 <button type="submit">Add to Cart</button>
 
