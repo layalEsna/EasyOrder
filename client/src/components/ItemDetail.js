@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useFormik } from "formik"
+import * as Yup from "yup"
 
 function ItemDetail({customer}) {
     const navigate = useNavigate() 
@@ -30,6 +31,12 @@ function ItemDetail({customer}) {
         initialValues: {
             quantity: 1 
         },
+        validationSchema: Yup.object({
+            quantity: Yup.number()
+                .min(1, 'Quantity must be at least 1')
+                .max(5, 'Quantity must not exceed 5')
+                .required('Quantity is required'),
+            }),
         onSubmit: (values) => {
             const quantity = Number(values.quantity)
             fetch('/cart', {
