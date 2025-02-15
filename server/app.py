@@ -263,7 +263,6 @@ class EditDeleteItem(Resource):
             return {'message': 'You should be logged in to edit an item.'}, 401
         order = Order.query.filter(Order.id == order_id, Order.customer_id == customer_id).first()
         if not order:
-            print(f"Order {order_id} not found for customer {customer_id}")  # Debugging line
 
             return {'error': 'Item not found.'}, 404
        
@@ -286,6 +285,20 @@ class EditDeleteItem(Resource):
         db.session.commit()
 
         return order.to_dict(), 200
+    
+    def delete(self, order_id):
+
+        customer_id = session.get('customer_id')
+        if not customer_id:
+            return {'error': 'You must be logged in to delete an item.'}, 401
+        
+        order = Order.query.filter(Order.id == order_id, Order.customer_id == customer_id).first()
+        if not order:
+            return {'error': 'Order not found.'}, 404
+        db.session.delete(order)
+        db.session.commit()
+
+        return {'message': 'Order deleted successfully.'}, 200
     
     
 
