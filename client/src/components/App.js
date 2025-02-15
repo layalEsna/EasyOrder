@@ -56,7 +56,7 @@ function App() {
           <Route path='/signup' element={<Signup setCustomer={setCustomer} />} />
           {/* <Route path='/cart/:order_id/edit' element={<Edit customer={customer} />} /> */}
           {/* <Route path='/cart/:order_id/delete' element={<Cart />} /> */}
-          <Route path='/cart/:order_id/delete' element={<Cart />} />
+          {/* <Route path='/cart/:order_id/delete' element={<Cart />} /> */}
 
           
         </Routes>

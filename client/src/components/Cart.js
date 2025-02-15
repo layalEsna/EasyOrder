@@ -11,6 +11,7 @@ function Cart({ customer }) {
         fetch('/cart')
             .then(res => res.json())
             .then(data => setItems(data))
+            // console.log("Items from API:")
             .catch(e => console.error('Failed to fetch cart items:', e))
     }, [])
 
@@ -38,7 +39,35 @@ function Cart({ customer }) {
                 alert(error.message)
             })
     }
-    
+
+    function handleDelete(orderId){
+        fetch(`/cart/${orderId}/delete`, {
+            method: 'DELETE',
+            // credentials: 'include', 
+        })
+        .then(res => {
+            if (!res.ok) {
+                return res.json().then(err => {
+                    throw new Error(err.error || 'Failed to delete order.');
+                });
+            }
+            return res.json(); // Assuming the server returns the updated cart
+        })
+            // .then(res => {
+            //     if (!res.ok) {
+            //         return res.json().then(err => {throw new Error(err.error || 'Failed to delete order.')})
+            //     }
+            //     return res.json()
+            // })
+            .then(updatedCart => {
+                setItems(updatedCart)
+                console.log("Order deleted and cart updated:", updatedCart)
+            })
+            .catch(error => {
+                console.error("Error deleting order:", error)
+                alert(error.message)
+            })
+    }
 
 
     
@@ -54,7 +83,8 @@ function Cart({ customer }) {
                             <p>Quantity: {order.quantity}</p>
                             <p>Price: ${order.selected_item.price.toFixed(2)}</p>
                             <button>Edit</button>
-                            {/* <button onClick={() => handleDelete(order.id)}>Delete</button> Call handleDelete with order.id */}
+                            <button onClick={()=> handleDelete(order.id)}>Delete</button>
+                           
                         </div>
                     ) : (
                         <div key={index}>
@@ -63,7 +93,7 @@ function Cart({ customer }) {
                     )
                 ))
             ) : (
-                <p>Your cart is empty.</p>
+                <p>Your Cart Is Empty</p>
             )}
 
             {items.length > 0 && <h3>Total: ${totalPrice.toFixed(2)}</h3>}

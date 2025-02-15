@@ -225,6 +225,7 @@ class Cart(Resource):
             return {'message': 'Your cart is empty.'}, 200
         cart_data = [
             {
+                'id': order.id,
                 'quantity': order.quantity,
                 'selected_item': {
                     'name': order.item.name,
@@ -242,17 +243,6 @@ class Logout(Resource):
              session.pop('customer_id', None)
              return {'messa': 'Successful logout.'}, 200
          return {'error': 'No active session found.'}, 400
-    
-# class Checkout(Resource):
-#     def delete(self):
-
-#         customer_id = session.get('customer_id')
-#         if not customer_id:
-#             return {'error': 'You need to be logged in to checkout.'}, 401
-#         Order.query.filter(Order.customer_id == customer_id).delete()
-#         db.session.commit()
-#         return {'message': 'Checkout successful. Cart cleared.'}, 200
-
 
 
 class Checkout(Resource):
