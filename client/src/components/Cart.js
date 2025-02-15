@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -17,52 +17,54 @@ function Cart({ customer }) {
             .then(data => setItems(data))
             .catch(e => console.error('Failed to fetch cart items:', e))
     }, [])
-    const totalPrice = items.reduce((sum, order) => sum + order.selected_item.price * order.quantity, 0)
+    const totalPrice = Array.isArray(items)
+        ? items.reduce((sum, order) => sum + (order.selected_item?.price || 0) * (order.quantity || 0), 0)
+        : 0;
+
+    function handleCheckout() {
+        fetch('/checkout', {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(() => {
+                setItems([])
+                navigate('/confirmation')
+            })
+            .catch(e => console.error(e))
+
+    }
 
 
     return (
 
         <div>
-            <h2>Your Cart {customer && customer.username ? customer.username : "Guest"}</h2>
+            <h2>Your Cart</h2>
 
             {items.length > 0 ? (
                 items.map((order, index) => (
-                    <div key={index}>
-                        <h3>{order.selected_item.name}</h3>
-                        <p>Quantity: {order.quantity}</p>
-                        {/* <p>Total price: ${(order.selected_item.price * order.quantity).toFixed(2)}</p> */}
-                    </div>
+                    order.selected_item ? (
+                        <div key={index}>
+                            <h3>{order.selected_item.name}</h3>
+                            <p>Quantity: {order.quantity}</p>
+                            <p>Price: ${order.selected_item.price.toFixed(2)}</p>
+                            <button>Edit</button>
+                            <button>Delete</button>
+                        </div>
+                    ) : (
+                        <div key={index}>
+                            <p>Error: Item data missing.</p>
+                        </div>
+                    )
                 ))
             ) : (
                 <p>Your cart is empty.</p>
             )}
 
             {items.length > 0 && <h3>Total: ${totalPrice.toFixed(2)}</h3>}
-            
-            <button onClick={() => navigate('/confirmation')}>Checkout</button>
+
+            <button onClick={handleCheckout}>Checkout</button>
         </div>
 
-
-
-        // <div>
-        //     <h2>Your Cart {customer && customer.username ? customer.username : "Guest"}</h2>
-
-        //     {items.length > 0 ? (
-
-        //         items.map((order, index) => (
-        //             <div key={index}>
-
-        //                 <h3>{order.selected_item.name}</h3>
-        //                 <p>Quantity: {order.quantity}</p>
-        //                 {/* <p>Total price: ${(order.selected_item.price * order.quantity).toFixed(2)}</p> */}
-
-        //             </div>
-        //         ))
-        //     ) : ''
-        //     }
-        //     {/* {items.length > 0 && <h4>Total: ${(order.selected_item.price * order.quantity).toFixed(2)}</h4>} */}
-        //     <button onClick={() => navigate('/confirmation')}>Checkout</button>
-        // </div>
     )
 }
 

@@ -61,8 +61,7 @@ function ItemDetail({customer}) {
 
     return (
         <div>
-            <h2>{customer && customer.username ? customer.username : "Guest"}</h2>
-
+           
             <h2>{item.name}</h2>
             <p>Price: ${item.price.toFixed(2)}</p>
 

@@ -51,6 +51,7 @@ function App() {
           <Route path="/confirmation" element={<Confirmation />} />
           <Route path="/navbar" element={<NavBar customer={customer}/>} />
           <Route path='/signup' element={<Signup setCustomer={setCustomer}/> } />
+          {/* <Route path='/checkout' element={<Signup setCustomer={setCustomer}/> } /> */}
         </Routes>
 
       </Router>

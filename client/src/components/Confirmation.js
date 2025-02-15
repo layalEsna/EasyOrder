@@ -5,7 +5,8 @@ function Confirmation() {
     return (
         <div>
             <h1>Your Order Submitted!</h1>
-            <h2>Thank You!</h2>
+            <p>Thank you for your purchase! Your order has been confirmed, and the payment details have been sent to your email.</p>
+           
 
         </div>
     )

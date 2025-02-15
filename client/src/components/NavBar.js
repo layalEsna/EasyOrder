@@ -40,7 +40,7 @@ function NavBar({customer}) {
             {customer ? (
                 <>
                     
-                    <span>Welcome, {customer.username}</span>
+                    <span>username: {customer.username}</span>
                     <button className='btn' onClick={handleLogout}>logout</button>
                 </>
             ) : (

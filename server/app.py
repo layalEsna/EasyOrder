@@ -243,6 +243,35 @@ class Logout(Resource):
              session.pop('customer_id', None)
              return {'messa': 'Successful logout.'}, 200
          return {'error': 'No active session found.'}, 400
+    
+class Checkout(Resource):
+    def delete(self):
+
+        customer_id = session.get('customer_id')
+        if not customer_id:
+            return {'error': 'You need to be logged in to checkout.'}, 401
+        Order.query.filter(Order.customer_id == customer_id).delete()
+        db.session.commit()
+        return {'message': 'Checkout successful. Cart cleared.'}, 200
+
+class EditDeleteItem(Resource):
+    def patch(self, order_id):
+        customer_id = session.get('customer_id')
+        if not customer_id:
+            return {'message': 'You should be logged in to edit an item.'}, 401
+        order = Order.query.filter(Order.customer_id == customer_id, Order.id == order_id).first()
+        if not order:
+            return {'error': 'Item not found.'}, 404
+        data = request.get_json()
+        if not data:
+            return {'error': 'No data provided for update.'}, 400
+        for attr, value in data.items():
+            if hasattr(order, attr):
+                setattr(order, attr, value)
+        db.session.commit()
+
+        return order.to_dict(), 200
+
 
         
         
@@ -258,6 +287,8 @@ api.add_resource(Logout, '/logout')
 api.add_resource(ItemById, '/items/<int:item_id>')
 api.add_resource(CustomerById, '/customer/<int:customer_id>')
 api.add_resource(Cart, '/cart')
+api.add_resource(Checkout, '/checkout')
+api.add_resource(EditDeleteItem, '/cart/<int:order_id>')
 
 
 
