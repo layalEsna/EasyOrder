@@ -43,24 +43,20 @@ function Cart({ customer }) {
     function handleDelete(orderId){
         fetch(`/cart/${orderId}/delete`, {
             method: 'DELETE',
-            // credentials: 'include', 
+           
         })
-        .then(res => {
-            if (!res.ok) {
-                return res.json().then(err => {
-                    throw new Error(err.error || 'Failed to delete order.');
-                });
-            }
-            return res.json(); // Assuming the server returns the updated cart
-        })
-            // .then(res => {
-            //     if (!res.ok) {
-            //         return res.json().then(err => {throw new Error(err.error || 'Failed to delete order.')})
-            //     }
-            //     return res.json()
-            // })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(err => {
+                        throw new Error(err.error || 'Failed to delete order.');
+                    });
+                }
+                return res.json()
+            }) 
+                
             .then(updatedCart => {
-                setItems(updatedCart)
+               
+                setItems([...updatedCart])
                 console.log("Order deleted and cart updated:", updatedCart)
             })
             .catch(error => {
@@ -97,8 +93,8 @@ function Cart({ customer }) {
             )}
 
             {items.length > 0 && <h3>Total: ${totalPrice.toFixed(2)}</h3>}
-
-            <button onClick={handleCheckout}>Checkout</button>
+            <button onClick={handleCheckout} disabled={items.length === 0}>Checkout</button>
+            
         </div>
     )
 }

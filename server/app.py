@@ -306,8 +306,23 @@ class DeleteOrder(Resource):
 
         db.session.delete(order)
         db.session.commit()
+        
+        cart_items = Order.query.filter(Order.customer_id == customer_id).all()
+        cart_data = [
+            {
+                'id': order.id,
+                'quantity':order.quantity,
+                'selected_item': {
+                    'id': order.item.id,
+                    'name': order.item.name,
+                    'price': order.item.price,
+                }
 
-        return {'message': 'Order deleted successfully.'}, 200
+            }
+            for order in cart_items
+        ]
+
+        return cart_data, 200
     
     
 
