@@ -311,7 +311,17 @@ class EditOrder(Resource):
                 setattr(order, attr, value)
         db.session.commit()
 
-        return order.to_dict(), 200
+        return {
+            'order_id': order.id,
+            'quantity': order.quantity,
+            'item_id': order.item.id,
+            'item_name': order.item.name,
+            'item_price': order.item.price,
+        }, 200
+
+
+
+        # return order.to_dict(), 200
 
 class DeleteOrder(Resource):
     

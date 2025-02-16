@@ -99,7 +99,7 @@ class Item(db.Model, SerializerMixin):
 
 class Order(db.Model, SerializerMixin):
     __tablename__ = 'orders'
-    serialize_only = ('id', 'customer_id', 'item_id', 'quantity')
+    serialize_only = ('id', 'customer_id', 'item_id', 'quantity', 'item.name', 'item.price')
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)

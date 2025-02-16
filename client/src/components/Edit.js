@@ -135,13 +135,15 @@ function Edit() {
                 .required('Quantity is required'),
         }),
         onSubmit: (values) => {
-            // const updatedValue = {...values}
+            const quantity = Number(values.quantity)
+            
             fetch(`/cart/${order_id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(values),
+                body: JSON.stringify({item_id: item.id, quantity: quantity})
+
             })
                 .then((res) => {
                     if (!res.ok) {
