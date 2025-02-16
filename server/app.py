@@ -213,12 +213,32 @@ class Cart(Resource):
         db.session.commit()
 
         return {'message': 'Item added to cart successfully.'}, 201
+    
+    
 
-
-    def get(self):
+    def get(self, order_id=None):
         customer_id = session.get('customer_id')
         if not customer_id:
             return {'error': 'You need to be logged in to view your cart.'}, 401
+        
+        if order_id:
+            
+            order = Order.query.filter(Order.id == order_id, Order.customer_id == customer_id).first()
+            if not order:
+                return {'error': 'Order not found.'}, 404
+            
+            item = Item.query.get(order.item_id)
+            if not item:
+                return {'error': 'Item not found.'}, 404
+            return {
+                'order_id': order.id,
+                'quantity': order.quantity,
+                'item_id': item.id,
+                'item_name': item.name,
+                'item_price': item.price,
+            }, 200
+
+            
         
         cart_items = Order.query.filter(Order.customer_id == customer_id).all()
         if not cart_items:
@@ -236,6 +256,9 @@ class Cart(Resource):
         ]
 
         return cart_data, 200
+    
+        
+
     
 class Logout(Resource):
     def delete(self):
@@ -340,12 +363,12 @@ api.add_resource(Items, '/items')
 api.add_resource(Logout, '/logout')
 api.add_resource(ItemById, '/items/<int:item_id>')
 api.add_resource(CustomerById, '/customer/<int:customer_id>')
-api.add_resource(Cart, '/cart')
-api.add_resource(Checkout, '/checkout')
-# api.add_resource(EditOrder, '/cart/<int:order_id>')
-# api.add_resource(DeleteOrder, '/cart/<int:order_id>')
+api.add_resource(Cart, '/cart', '/cart/<int:order_id>')
 
-api.add_resource(EditOrder, '/cart/<int:order_id>/edit')
+api.add_resource(Checkout, '/checkout')
+# api.add_resource(EditOrder, '/edit/<int:order_id>')
+api.add_resource(EditOrder, '/cart/<int:order_id>')
+# api.add_resource(EditOrder, '/cart/<int:order_id>/edit')
 api.add_resource(DeleteOrder, '/cart/<int:order_id>/delete')
 
 

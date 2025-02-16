@@ -1,24 +1,26 @@
 
 
 import React, { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 function Cart({ customer }) {
     const [items, setItems] = useState([])
     const navigate = useNavigate()
+    
 
     useEffect(() => {
         fetch('/cart')
             .then(res => res.json())
             .then(data => setItems(data))
-            // console.log("Items from API:")
+
             .catch(e => console.error('Failed to fetch cart items:', e))
     }, [])
 
-        const totalPrice = Array.isArray(items)
-            ? items.reduce((sum, order) => sum + (order.selected_item?.price || 0) * (order.quantity || 0), 0)
-            : 0
-    
+
+    const totalPrice = Array.isArray(items)
+        ? items.reduce((sum, order) => sum + (order.selected_item?.price || 0) * (order.quantity || 0), 0)
+        : 0
+
     function handleCheckout() {
         fetch('/checkout', {
             method: 'POST',
@@ -26,7 +28,7 @@ function Cart({ customer }) {
         })
             .then(res => {
                 if (!res.ok) {
-                    return res.json().then(err => {throw new Error(err.error || 'Checkout failed.')}) // Improved error handling
+                    return res.json().then(err => { throw new Error(err.error || 'Checkout failed.') }) // Improved error handling
                 }
                 return res.json()
             })
@@ -40,10 +42,10 @@ function Cart({ customer }) {
             })
     }
 
-    function handleDelete(orderId){
-        fetch(`/cart/${orderId}/delete`, {
+    function handleDelete(order_id) {
+        fetch(`/cart/${order_id}/delete`, {
             method: 'DELETE',
-           
+
         })
             .then(res => {
                 if (!res.ok) {
@@ -52,10 +54,10 @@ function Cart({ customer }) {
                     });
                 }
                 return res.json()
-            }) 
-                
+            })
+
             .then(updatedCart => {
-               
+
                 setItems([...updatedCart])
                 console.log("Order deleted and cart updated:", updatedCart)
             })
@@ -65,8 +67,12 @@ function Cart({ customer }) {
             })
     }
 
-
-    
+    function navigateToEdit(order_id) {
+        navigate(`/edit/${order_id}`)
+    }
+    // function navigateToEdit(order_id) {
+    //     navigate(`/cart/${order_id}/edit`)
+    // }
     return (
         <div>
             <h2>Your Cart</h2>
@@ -78,9 +84,10 @@ function Cart({ customer }) {
                             <h3>{order.selected_item.name}</h3>
                             <p>Quantity: {order.quantity}</p>
                             <p>Price: ${order.selected_item.price.toFixed(2)}</p>
-                            <button>Edit</button>
-                            <button onClick={()=> handleDelete(order.id)}>Delete</button>
-                           
+
+                            <button onClick={() => navigateToEdit(order.id)}>Edit</button>
+                            <button onClick={() => handleDelete(order.id)}>Delete</button>
+
                         </div>
                     ) : (
                         <div key={index}>
@@ -94,7 +101,7 @@ function Cart({ customer }) {
 
             {items.length > 0 && <h3>Total: ${totalPrice.toFixed(2)}</h3>}
             <button onClick={handleCheckout} disabled={items.length === 0}>Checkout</button>
-            
+
         </div>
     )
 }
