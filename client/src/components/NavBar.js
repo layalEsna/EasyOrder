@@ -40,14 +40,14 @@ function NavBar({customer}) {
             {customer ? (
                 <>
                     
-                    <span>username: {customer.username}</span>
-                    <button className='btn' onClick={handleLogout}>logout</button>
+                    <span>Username: {customer.username}</span>
+                    <button className='logout-btn' onClick={handleLogout}>logout</button>
                 </>
             ) : (
                     <>
                         
                     <span>Welcome to Easy Order</span>
-                    <button onClick={() => navigate('/login')}>login</button>
+                    <button className='btn' onClick={() => navigate('/login')}>login</button>
                 </>)
 
             }

@@ -93,7 +93,7 @@ function ItemDetail({customer}) {
                 )}
 
 
-                <button type="submit">Add to Cart</button>
+                <button className='btn' type="submit">Add to Cart</button>
 
             </form>
         </div>

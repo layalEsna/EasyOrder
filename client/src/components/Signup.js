@@ -59,7 +59,7 @@ function Signup({setCustomer}) {
                     return res.json()
                 })
                 .then(data => {
-                    // setLoading(true)
+                    
                     if (!data || !data.id) {
                         throw new Error('Signup failed.')
                     }
@@ -68,13 +68,17 @@ function Signup({setCustomer}) {
 
                 })
                 .catch(e => {
-                    // setLoading(false)
-                    if (e.message === 'Failed to fetch') {
-                        setErrorMessage('Network error or server not running. Please check the server.')
-                    } else {
-                        setErrorMessage(e.message)
+
+                    if (e.message === 'unique constraint') {
+                        setErrorMessage('Username or email already exists. Please choose a different one.')
                     }
-                    console.error(`Error: ${e.message}`)
+
+                    
+        //             if (e.message === 'Failed to fetch') {
+        //                 setErrorMessage('Network error or server not running. Please check the server.')
+                
+        // }
+                    
                 })
 
         })
@@ -96,7 +100,7 @@ function Signup({setCustomer}) {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.username && formik.touched.username && (
-                        <div>{formik.errors.username}</div>
+                        <div className='error'>{formik.errors.username}</div>
                     )}
                 </div>
                 <div>
@@ -110,7 +114,7 @@ function Signup({setCustomer}) {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.password && formik.touched.password && (
-                        <div>{formik.errors.password}</div>
+                        <div className='error'>{formik.errors.password}</div>
                     )}
                 </div>
                 <div>
@@ -124,7 +128,7 @@ function Signup({setCustomer}) {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.confirm_password && formik.touched.confirm_password && (
-                        <div>{formik.errors.confirm_password}</div>
+                        <div className='error'>{formik.errors.confirm_password}</div>
                     )}
                 </div>
 
@@ -141,7 +145,7 @@ function Signup({setCustomer}) {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.email && formik.touched.email && (
-                        <div>{formik.errors.email}</div>
+                        <div className='error'>{formik.errors.email}</div>
                     )}
                 </div>
 
@@ -149,6 +153,8 @@ function Signup({setCustomer}) {
 
                 <div>
                     <button className='btn' type='submit'>signup</button>
+                    <span>Already have an account?</span>
+                    <button onClick={()=>navigate('/login')} className='btn' type='submit'>login</button>
                 </div>
 
             </form>

@@ -11,9 +11,7 @@ import * as Yup from 'yup'
 function Login({setCustomer}) {
 
     const [errorMessage, setErrorMessage] = useState('')
-
     const navigate = useNavigate()
-
     const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*]).{8,}$/
 
     const formik = useFormik({
@@ -56,6 +54,9 @@ function Login({setCustomer}) {
                 .then((data) => {
                     console.log('login data', data)
                     if (data) {
+                        if (data.error) {
+                            throw new Error(data.error)
+                        }
                         setCustomer(data)
                         navigate('/items')
                     }
@@ -88,7 +89,7 @@ function Login({setCustomer}) {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.username && formik.touched.username && (
-                        <div>{formik.errors.username}</div>
+                        <div className='error'>{formik.errors.username}</div>
                     )}
                 </div>
                 <div>
@@ -102,16 +103,17 @@ function Login({setCustomer}) {
                         onBlur={formik.handleBlur}
                     />
                     {formik.errors.password && formik.touched.password && (
-                        <div>{formik.errors.password}</div>
+                        <div className='error'>{formik.errors.password}</div>
                     )}
                 </div>
 
                 <div>
                     <button className='btn' type='submit'>login</button>
+                    <button className='btn' onClick={()=> navigate('/signup') } type='submit'>signup</button>
                 </div>
 
             </form>
-            {errorMessage && <div>{errorMessage}</div>}
+            {/* {errorMessage && <div>{errorMessage}</div>} */}
 
         </div>
     )

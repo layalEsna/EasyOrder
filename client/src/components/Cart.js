@@ -1,7 +1,7 @@
 
 
 import React, { useState, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 function Cart({ customer }) {
     const [items, setItems] = useState([])
@@ -85,8 +85,8 @@ function Cart({ customer }) {
                             <p>Quantity: {order.quantity}</p>
                             <p>Price: ${order.selected_item.price.toFixed(2)}</p>
 
-                            <button onClick={() => navigateToEdit(order.id)}>Edit</button>
-                            <button onClick={() => handleDelete(order.id)}>Delete</button>
+                            <button className='btn' onClick={() => navigateToEdit(order.id)}>Edit</button>
+                            <button className='delete-btn' onClick={() => handleDelete(order.id)}>Delete</button>
 
                         </div>
                     ) : (
@@ -100,7 +100,7 @@ function Cart({ customer }) {
             )}
 
             {items.length > 0 && <h3>Total: ${totalPrice.toFixed(2)}</h3>}
-            <button onClick={handleCheckout} disabled={items.length === 0}>Checkout</button>
+            <button className='btn' onClick={handleCheckout} disabled={!Array.isArray(items) || items.length===0}>Checkout</button>
 
         </div>
     )

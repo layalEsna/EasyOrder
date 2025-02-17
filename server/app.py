@@ -84,9 +84,9 @@ class Signup(Resource):
             if password != confirm_password:
                 return make_response(jsonify({'error': 'Password not match.'}), 400)
             if Customer.query.filter(Customer.username==username).first():
-                return make_response(jsonify({'error': 'Username already exists.'}), 400)
+                return make_response(jsonify({'error': 'unique constraint'}), 400)
             if Customer.query.filter(Customer.email == email).first():
-                return make_response(jsonify({'error': 'Email already exists.'}), 400)
+                return make_response(jsonify({'error': 'unique constraint'}), 400)
 
             
             new_customer = Customer(
@@ -96,9 +96,7 @@ class Signup(Resource):
             )
 
             db.session.add(new_customer)
-            db.session.commit()
-
-            
+            db.session.commit()            
             session['customer_id'] = new_customer.id
             session.permanent = True 
 
@@ -153,12 +151,6 @@ class CheckSession(Resource):
             return {'message': '401: Not Authorized'}, 401
         
 
-# class CheckSession(Resource):
-#     def get(self):
-#         if 'customer_id' in session:
-#             customer = Customer.query.get(session['customer_id'])
-#             return {'username': customer.username, 'id': customer.id}
-#         return {'error': 'Unauthorized'}, 401
 
         
 class Logout(Resource):

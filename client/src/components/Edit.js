@@ -185,7 +185,7 @@ function Edit() {
                     <div className="error">{formik.errors.quantity}</div>
                 )}
 
-                <button type="submit">Back to the cart</button>
+                <button className='btn' type="submit">Back to the cart</button>
             </form>
         </div>
     )

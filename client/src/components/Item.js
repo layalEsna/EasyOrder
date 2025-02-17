@@ -32,7 +32,7 @@ function Item({ customer }) {
                     <div key={item.id}>
                         <h4>{item.name}</h4>
                         <p>{item.price}</p>
-                        <button onClick={() => navigate(`/items/${item.id}`)}>Select</button>
+                        <button className='btn' onClick={() => navigate(`/items/${item.id}`)}>Select</button>
                     </div>
                 ))) : (
                     <div>loading...</div>

@@ -5,3 +5,99 @@
   --text: hsla(0, 0%, 100%, 0.88);
 }
 
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+
+
+
+input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+
+.btn {
+  width: 30%;
+  padding: 10px;
+  background-color: #198191;
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+  margin-right: 20px;
+}
+
+.btn:hover {
+  background-color: #0a1517;
+}
+
+.logout-btn {
+  width: 100px;
+  padding: 10px;
+  background-color: #198191; /* Green */
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px;
+ 
+}
+
+.logout-btn:hover {
+  background-color: #0a1517; /* Darker Green */
+}
+
+.delete-btn {
+  width: 100px;
+  padding: 10px;
+  background-color: #c657b5; /* Red */
+  border: none;
+  color: white;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px;
+  
+}
+
+.delete-btn:hover {
+  background-color: #5f1854; /* Darker Red */
+}
+
+.nav {
+  margin-right: 40px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  color: #c657b5; 
+}
+
+.nav {
+  color: #0056b3; 
+  text-decoration: underline; 
+}
+
+.nav {
+  color: #004085; 
+}
+
