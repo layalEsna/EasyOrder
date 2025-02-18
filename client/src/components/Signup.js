@@ -153,8 +153,8 @@ function Signup({setCustomer}) {
 
                 <div>
                     <button className='btn' type='submit'>signup</button>
-                    <span>Already have an account?</span>
-                    <button onClick={()=>navigate('/login')} className='btn' type='submit'>login</button>
+                    {/* <div className='signup_btn'> <span>Already have an account?</span>
+                    <button onClick={()=>navigate('/login')} className='btn' type='submit'>login</button></div> */}
                 </div>
 
             </form>

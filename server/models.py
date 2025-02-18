@@ -32,6 +32,7 @@ class Customer(db.Model, SerializerMixin):
     username = db.Column(db.String(100), nullable=False)
     _hash_password = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
+    items = association_proxy('orders', 'item')
 
     @validates('username')
     def validate_username(self,key, username):
@@ -78,6 +79,9 @@ class Item(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
+    customers = association_proxy('orders', 'customer')
+
+    
 
     @validates('name')
     def validate_name(self,key, name):
