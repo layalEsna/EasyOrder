@@ -31,7 +31,7 @@ function Item({ customer }) {
                 items.length > 0 ? (items.map(item => (
                     <div key={item.id}>
                         <h4>{item.name}</h4>
-                        <p>{item.price}</p>
+                        <p>price: {item.price}</p>
                         <button className='btn' onClick={() => navigate(`/items/${item.id}`)}>Select</button>
                     </div>
                 ))) : (
