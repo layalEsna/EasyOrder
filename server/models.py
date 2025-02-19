@@ -79,6 +79,9 @@ class Item(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
+    is_seller = db.Column(db.Boolean, default=False)
+
+
     customers = association_proxy('orders', 'customer')
 
     

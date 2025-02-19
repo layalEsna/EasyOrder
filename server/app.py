@@ -68,6 +68,35 @@ class Items(Resource):
         ]
         return all_items, 200
     
+class CreateItem(Resource):
+    def post(self):
+        customer_id = session.get('customer_id')
+        if not customer_id:
+            return {'error': 'You need to be logged in to create an item.'}, 401
+        customer = Customer.query.get('customer_id')
+        if not customer or not customer.is_seller:
+            return {'error': 'ONly sellers can creatte items.'}, 401
+
+
+        data = request.get_json()
+        name = data.get('name')
+        price = data.get('price')
+        if not all([name, price]):
+            return {'error': 'All the fields are required.'}, 400
+        new_item = Item(
+            name = name,
+            price = price
+        )
+        
+        db.session.add(new_item)
+        db.session.commit()
+        session['item_id'] = new_item.id
+        
+
+        return new_item.to_dict(), 201
+       
+
+        
 class Signup(Resource):
     
     def post(self):
