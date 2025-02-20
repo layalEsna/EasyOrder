@@ -45,7 +45,10 @@ function CreateItem() {
     })
     return (
         <div>
-            <div><h3>Sellers Section</h3></div>
+            <div>
+  <h2>Seller Dashboard</h2>
+  <p>List your products for sale by filling out the form below.</p>
+</div>
             <h2>Create a New Item</h2>
             <form onSubmit={formik.handleSubmit}>
                 <div>
