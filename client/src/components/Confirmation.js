@@ -1,15 +1,15 @@
 
 
-// function Confirmation() {
+function Confirmation() {
     
-//     return (
-//         <div>
-//             <h1>Your Order Submitted!</h1>
-//             <p>Thank you for your purchase! Your order has been confirmed, and the payment details have been sent to your email.</p>
+    return (
+        <div>
+            <h1>Your Order Submitted!</h1>
+            <p>Thank you for your purchase! Your order has been confirmed, and the payment details have been sent to your email.</p>
            
 
-//         </div>
-//     )
-// }
+        </div>
+    )
+}
 
-// export default Confirmation
+export default Confirmation

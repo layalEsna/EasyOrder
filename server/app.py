@@ -27,7 +27,7 @@ api = Api(app)
 CORS(app)
 
 # Import models after initializing db to prevent circular imports
-from models import Customer, Item, Order  # Importing here avoids circular imports
+from models import Customer, Item, Order  
 
 
 # Views go here!
