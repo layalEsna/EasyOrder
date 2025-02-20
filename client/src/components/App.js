@@ -9,6 +9,7 @@ import Confirmation from "./Confirmation";
 import Signup from "./Signup";
 import NavBar from "./NavBar";
 import Edit from "./Edit";
+import CreateItem from "./CreateItem";
 
 function App() {
 
@@ -55,6 +56,7 @@ function App() {
           <Route path="/navbar" element={<NavBar customer={customer} />} />
           <Route path='/signup' element={<Signup setCustomer={setCustomer} />} />
           <Route path='/edit/:order_id' element={<Edit customer={customer} />} />
+          <Route path="/create-item" element={<CreateItem />} />
           
           {/* <Route path='/cart/:order_id/edit' element={<Edit customer={customer} />} /> */}
           

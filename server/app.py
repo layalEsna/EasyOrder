@@ -1,24 +1,5 @@
 
-###################################
-# #!/usr/bin/env python3
 
-# # Standard library imports
-
-# # Remote library imports
-
-# from flask import request, make_response, jsonify, session
-# from flask_restful import Resource
-
-# # Local imports
-# from config import app, db, api
-
-# # Add your model imports
-# from models import Customer, Item, Order
-
-
-
-# # Views go here!
-##########################################
 from flask import Flask, request, make_response, jsonify, session
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -68,32 +49,43 @@ class Items(Resource):
         ]
         return all_items, 200
     
-class CreateItem(Resource):
-    def post(self):
-        customer_id = session.get('customer_id')
-        if not customer_id:
-            return {'error': 'You need to be logged in to create an item.'}, 401
-        customer = Customer.query.get('customer_id')
-        if not customer or not customer.is_seller:
-            return {'error': 'ONly sellers can creatte items.'}, 401
+# @app.before_request
+# def checked_if_logged_in():
+#     customer_id = session.get('customer_id')
+#     if not customer_id:
+#         return {'error': 'Unauthorized'}, 401
+#     if customer_id != 1:
+#         return {'error': 'You do not have permission to create items.'}, 403  
+
+    
+# class CreateItem(Resource):
+#     def post(self):
+#         customer_id = session.get('customer_id')
+#         if not customer_id:
+#             return {'error': 'You need to be logged in to create an item.'}, 401
+#         if customer_id != 1:
+#             return {'error': 'You do not have permission to create items.'}, 403
+#         customer = Customer.query.get(customer_id)
+#         if not customer or not customer.is_seller:
+#             return {'error': 'ONly sellers can creatte items.'}, 401
 
 
-        data = request.get_json()
-        name = data.get('name')
-        price = data.get('price')
-        if not all([name, price]):
-            return {'error': 'All the fields are required.'}, 400
-        new_item = Item(
-            name = name,
-            price = price
-        )
+#         data = request.get_json()
+#         name = data.get('name')
+#         price = data.get('price')
+#         if not all([name, price]):
+#             return {'error': 'All the fields are required.'}, 400
+#         new_item = Item(
+#             name = name,
+#             price = price
+#         )
         
-        db.session.add(new_item)
-        db.session.commit()
-        session['item_id'] = new_item.id
+#         db.session.add(new_item)
+#         db.session.commit()
+#         session['item_id'] = new_item.id
         
 
-        return new_item.to_dict(), 201
+#         return new_item.to_dict(), 201
        
 
         
@@ -397,10 +389,10 @@ api.add_resource(CustomerById, '/customer/<int:customer_id>')
 api.add_resource(Cart, '/cart', '/cart/<int:order_id>')
 
 api.add_resource(Checkout, '/checkout')
-# api.add_resource(EditOrder, '/edit/<int:order_id>')
+
 api.add_resource(EditOrder, '/cart/<int:order_id>')
-# api.add_resource(EditOrder, '/cart/<int:order_id>/edit')
 api.add_resource(DeleteOrder, '/cart/<int:order_id>/delete')
+api.add_resource(CreateItem, '/items')
 
 
 
@@ -408,4 +400,6 @@ if __name__ == '__main__':
     app.run(port=5555, debug=True)
 
 # python server/app.py
+# sqlite3 /Users/layla/Development/code/se-prep/phase-4/EasyOrder/server/app.db
+
 

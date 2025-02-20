@@ -6,8 +6,7 @@ from sqlalchemy.orm import validates, relationship
 
 import re
 
-######################from config import db, bcrypt
-# from app import db, bcrypt
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from sqlalchemy import MetaData
@@ -32,7 +31,10 @@ class Customer(db.Model, SerializerMixin):
     username = db.Column(db.String(100), nullable=False)
     _hash_password = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
+    is_seller = db.Column(db.Boolean, default=False)
+
     items = association_proxy('orders', 'item')
+    orders = db.relationship('Order', back_populates='customer')
 
     @validates('username')
     def validate_username(self,key, username):
@@ -79,10 +81,11 @@ class Item(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
-    is_seller = db.Column(db.Boolean, default=False)
+    
 
 
     customers = association_proxy('orders', 'customer')
+    orders = db.relationship('Order', back_populates='item')
 
     
 
