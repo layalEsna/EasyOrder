@@ -164,10 +164,10 @@ class CheckSession(Resource):
 
 
         
-class Logout(Resource):
-    def delete(self):
-        session.pop('customer_id', None)
-        return '', 204
+# class Logout(Resource):
+#     def delete(self):
+#         session.pop('customer_id', None)
+#         return '', 204
     
 
 class ItemById(Resource):
@@ -263,12 +263,12 @@ class Cart(Resource):
         
 
     
-# class Logout(Resource):
-#     def delete(self):
-#          if 'customer_id' in session:
-#              session.pop('customer_id', None)
-#              return {'messa': 'Successful logout.'}, 200
-#          return {'error': 'No active session found.'}, 400
+class Logout(Resource):
+    def delete(self):
+         if 'customer_id' in session:
+             session.pop('customer_id', None)
+             return {'messa': 'Successful logout.'}, 200
+         return {'error': 'No active session found.'}, 400
 
 
 class Checkout(Resource):
