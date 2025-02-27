@@ -25,7 +25,7 @@ bcrypt = Bcrypt()
 
 class Customer(db.Model, SerializerMixin):
     __tablename__ = 'customers'
-    serialize_only = ('id', 'username', 'email')
+    serialize_only = ('id', 'username', 'email', 'items.name', 'items.price', 'orders.quantity')
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
@@ -77,7 +77,6 @@ class Customer(db.Model, SerializerMixin):
 class Item(db.Model, SerializerMixin):
     __tablename__ = 'items'
     serialize_only = ('id', 'name', 'price')
-
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -109,7 +108,7 @@ class Item(db.Model, SerializerMixin):
 
 class Order(db.Model, SerializerMixin):
     __tablename__ = 'orders'
-    serialize_only = ('id', 'customer_id', 'item_id', 'quantity', 'item.name', 'item.price')
+    serialize_only = ('id', 'customer_id', 'item_id', 'quantity', 'item.price', 'item.name')
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)
@@ -125,4 +124,3 @@ class Order(db.Model, SerializerMixin):
             raise ValueError('Quantity is required and must be a positive integer.')
         return quantity
 
-# 

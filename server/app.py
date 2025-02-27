@@ -1,12 +1,10 @@
-
-
 from flask import Flask, request, make_response, jsonify, session
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 
 
-
+# only logout
 
 from config import Config  # Import config class
 from models import db, bcrypt  # Now importing from models instead of defining in app.py
@@ -22,7 +20,6 @@ migrate = Migrate(app, db)
 
 # Instantiate REST API
 api = Api(app)
-
 # Instantiate CORS
 CORS(app)
 
@@ -67,7 +64,7 @@ class CreateItem(Resource):
             return {'error': 'You do not have permission to create items.'}, 403
         customer = Customer.query.get(customer_id)
         if not customer or not customer.is_seller:
-            return {'error': 'ONly sellers can creatte items.'}, 401
+            return {'error': 'Only sellers can creatte items.'}, 401
 
 
         data = request.get_json()
@@ -154,21 +151,14 @@ class Login(Resource):
 
 class CheckSession(Resource):
     def get(self):
-        
-        customer_id = session.get('customer_id')
-        
+        customer_id = session.get('customer_id')  
         if customer_id:
-            
             customer = Customer.query.filter(Customer.id == customer_id).first()
-            
             if customer:
-               
                 return {'customer': customer.to_dict()}, 200
             else:
-              
                 return {'message': 'customer not found'}, 404
         else:
-          
             return {'message': '401: Not Authorized'}, 401
         
 
@@ -273,12 +263,12 @@ class Cart(Resource):
         
 
     
-class Logout(Resource):
-    def delete(self):
-         if 'customer_id' in session:
-             session.pop('customer_id', None)
-             return {'messa': 'Successful logout.'}, 200
-         return {'error': 'No active session found.'}, 400
+# class Logout(Resource):
+#     def delete(self):
+#          if 'customer_id' in session:
+#              session.pop('customer_id', None)
+#              return {'messa': 'Successful logout.'}, 200
+#          return {'error': 'No active session found.'}, 400
 
 
 class Checkout(Resource):
@@ -289,16 +279,18 @@ class Checkout(Resource):
         orders = Order.query.filter(Order.customer_id == customer_id).all()
         if not orders:
             return {'message': 'Your cart is empty.'}, 200
+        # return [order.to_dict() for order in orders], 200
         Order.query.filter(Order.customer_id == customer_id).delete()
         db.session.commit()
         return {'message': 'Checkout successful.'}, 200
         
-
 class EditOrder(Resource):
+    
 
     def get(self, order_id):
 
         customer_id = session.get('customer_id')
+        
         if not customer_id:
             return {'message': 'You should be logged in to edit an item.'}, 401
         order = Order.query.filter(Order.id == order_id, Order.customer_id == customer_id).first()
@@ -369,15 +361,227 @@ class DeleteOrder(Resource):
         ]
 
         return cart_data, 200
-    
-    
 
-
-        
-        
+    
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
+
+# #######
+class ItemByCustomers(Resource):
+    def get(self , item_id):
+        customers_item_purchase = Order.query.filter(Order.item_id == item_id, Order.customer_id.isnot(None)).all()
+        if not customers_item_purchase:
+            return {'message': 'no customer bought the item'}, 200
+        return [{
+            'id': order.customer.id,
+            'name': order.customer.username,
+            'email': order.customer.email,
+        }
+        for order in customers_item_purchase
+        if order.customer
+
+        ], 200
+    
+class PurchasedByCustomer(Resource):
+    def get(self, customer_id):
+        item_purchased = Order.query.filter(Order.customer_id == customer_id).all() 
+        if not item_purchased:
+            return {'message': f'Customer with ID: {customer_id} has not bought any item'}, 200
+        return [
+            {
+            'id': order.id,
+            'quantity': order.quantity,
+            'customer':{
+                'username': order.customer.username,
+            },
+            'item': {
+                'name': order.item.name,
+                'price': order.item.price,
+            }
+             
+        }for order in item_purchased
+       
+        ], 200  
+    
+# class FrequentBuyers(Resource):
+#     def get(self, item_id):
+#         orders = Order.query.filter(Order.item_id == item_id).all()
+
+#         customer_count = Counter(order.customer_id for order in orders)
+#         frequent_buyers = [
+#             {
+#                 'id': order.customer_id,
+#                 'username': order.customer.username,
+#                 'price': order.item.price,
+#                 'times_purchased': customer_count[order.customer_id]
+#             }
+#             for order in orders if customer_count[order.customer_id] > 1
+#         ]
+
+#         if not frequent_buyers:
+#             return {'message': 'No frequent customer found'}, 200
+#         return frequent_buyers, 200
+
+                   
+
+
+class CustomerOrders(Resource):
+    def get(self, customer_id):
+        orders = Order.query.filter(Order.customer_id == customer_id).all()
+        if not orders:
+            return {'message': 'customer has no order'}, 200
+        return [{
+            'name': order.item.name,
+            'price': order.item.price,
+            'customer':{
+                'username': order.customer.username
+
+            }
+
+        } for order in orders
+        ], 200
+    
+    # Get All Items Ordered by a Specific Customer
+
+class OrderItems(Resource):
+    def get(self):
+        customer_id = session.get('customer_id')
+        if not customer_id:
+            return {'error': 'customer is not logged in'}, 401
+        orders = Order.query.filter(Order.customer_id == customer_id).all()
+        return [
+            {
+                'quantity': order.quantity,
+                'customer':{
+                'username':order.customer.username,
+                },
+                'item': {
+                    'name': order.item.name,
+                    'price': order.item.price
+                }
+
+            }
+            for order in orders
+        ] , 200     
+    
+# Get All Customers Who Ordered a Specific Item
+class CustomerGotAnItem(Resource):
+    def get(self, item_id):
+        orders = Order.query.filter(Order.item_id == item_id).all()
+        if orders:
+            return (
+                [
+                    {
+                        'username': order.customer.username,
+                        'email': order.customer.email,
+
+                    }
+                    for order in orders
+                ], 200
+            )
+
+
+# Get Total Quantity Ordered for Each Item
+class EachItemQuantity(Resource):
+    def get(self):
+        orders = Order.query.all()
+        return (
+            [
+                {
+                    'quantity': order.quantity,
+                    'item': {
+                        'name': order.item.name
+                    }
+                }
+                for order in orders
+            ], 200
+        )
+
+# Get Customers Who Have Not Ordered Anything
+class CustomerWithNoOrder(Resource):
+    def get(self):
+        customers = Customer.query.filter(Customer.orders == []).all()
+        return (
+            [
+                {
+                    'username': customer.username,
+                    'id': customer.id,
+
+                }
+                for customer in customers
+            ], 200
+            
+        )
+    
+# Get Items with Orders Above a Certain Quantity
+class OrdersMoreThanOne(Resource):
+    def get(self):
+        orders = Order.query.filter(Order.quantity > 1).all()
+        return [
+            {
+                'quantity': order.quantity,
+                'item': {
+                    'name':order.item.name,
+                    'price':order.item.price,
+}
+            }
+            for order in orders
+            ], 200
+       
+    
+    # Get All Orders for an Item Ordered by a Specific Customer
+class OrdersOfItemByACustomer(Resource):
+    def get(self, item_id, customer_id):
+        orders = Order.query.filter(Order.customer_id == customer_id, Order.item_id == item_id).all()
+        return [
+                {
+                   'quantity': order.quantity,
+                   'item': {
+                       'name': order.item.name,
+                       'price': order.item.price,
+
+                   },
+                   'customer': {
+                       'username': order.customer.username
+                   }
+                }
+                for order in orders
+            ], 200
+    
+# # Get All Customers Who Ordered a Specific Item
+
+class CustomersItem(Resource):
+    def get(self, item_id):
+        item = Item.query.filter(Item.id == item_id).first()
+        if not item:
+            return {'message': 'Item not found'}, 404
+
+        customers = item.customers
+        return [
+            {
+                
+                'username': customer.username
+            }
+            for customer in customers
+        ], 200
+    
+
+api.add_resource(CustomersItem, '/customers/<int:item_id>')
+api.add_resource(OrdersOfItemByACustomer, '/items/<int:item_id>/<int:customer_id>')
+ 
+api.add_resource(CustomerOrders, '/customers/orders/<int:customer_id>')               
+# api.add_resource(FrequentBuyers, '/frequent_buyers/<int:item_id>')               
+api.add_resource(ItemByCustomers, '/customers/item/<int:item_id>')               
+api.add_resource(PurchasedByCustomer, '/items/customer/<int:customer_id>')               
+############
+
+
+
+
+
+
+
 
 api.add_resource(Signup, '/signup')
 api.add_resource(Login, '/login')
