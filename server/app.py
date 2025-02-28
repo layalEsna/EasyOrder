@@ -157,17 +157,10 @@ class CheckSession(Resource):
             if customer:
                 return {'customer': customer.to_dict()}, 200
             else:
-                return {'message': 'customer not found'}, 404
+                return {'error': 'customer not found'}, 404
         else:
-            return {'message': '401: Not Authorized'}, 401
+            return {'error': '401: Not Authorized'}, 401
         
-
-
-        
-# class Logout(Resource):
-#     def delete(self):
-#         session.pop('customer_id', None)
-#         return '', 204
     
 
 class ItemById(Resource):
