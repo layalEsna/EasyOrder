@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react"
 import ItemDetail from "./ItemDetail"
 
 
-function Item({ customer, setCustomer }) {
+function Item({ customer, updateCustomerCart }) {
 
     const [items, setItems] = useState([])
     
@@ -22,12 +22,6 @@ function Item({ customer, setCustomer }) {
             .catch()
        
     }, [])
-
-    function updateCustomerCart(newOrder) {
-        setCustomer(prev => ({
-            ...prev, orders: [...prev.orders, newOrder]
-        }))
-    }
 
     return (
         <div>

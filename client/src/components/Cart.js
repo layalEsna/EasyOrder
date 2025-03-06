@@ -3,7 +3,7 @@
 
 import { useNavigate } from "react-router-dom"
 
-function Cart({ customer, setCustomer }) {
+function Cart({ customer, setCustomer, updateCustomerCart }) {
     const navigate = useNavigate()
     const orders = Array.isArray(customer?.orders) ? customer.orders : []
     
@@ -11,12 +11,13 @@ function Cart({ customer, setCustomer }) {
 
    
     const totalPrice = orders
-        .filter(order => order && order.item && typeof order.item.price === 'number') // Filter valid orders
+        .filter(order => order && order.item && typeof order.item.price === 'number') 
         .reduce((total, order) => {
             return total + (order.item.price * order.quantity)
         }, 0)
 
     function handleDelete(order_id) {
+
         fetch(`/cart/${order_id}/delete`, {
             method: 'DELETE',
         })
@@ -55,9 +56,9 @@ function Cart({ customer, setCustomer }) {
 
             {orders.length > 0 ? (
                 orders
-                    .filter(order => order && order.item) // ✅ Ensures order and item exist
+                    .filter(order => order && order.item) 
                     .map((order) => {
-                        console.log("Map Order:", order)
+                        
                         return (
                             <div key={order.id}>
                                 <h3>{order.item.name || "Unknown Item"}</h3>

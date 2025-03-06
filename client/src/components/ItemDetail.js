@@ -6,9 +6,7 @@ import * as Yup from "yup"
 function ItemDetail({item, updateCustomerCart}) {
     const navigate = useNavigate() 
     
-    // const [order, setOrder] = useState(null)
-    // const [quantity, setQuantity] = useState(1)
-    const [error, setError] = useState('')
+        const [error, setError] = useState('')
 
 
     const handleAddToCart = (quantity) => {
@@ -44,8 +42,8 @@ function ItemDetail({item, updateCustomerCart}) {
         }),
 
         onSubmit: (values) => {
-            handleAddToCart(item.id, Number(values.quantity))
             
+            handleAddToCart(Number(values.quantity))
         }
         
         

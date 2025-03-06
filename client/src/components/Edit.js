@@ -1,16 +1,17 @@
 
 
 import { useNavigate } from "react-router-dom"
-
 import { useFormik } from "formik"
 import * as Yup from "yup"
 
-function Edit({ customer }) {
+function Edit({ customer, setCustomer }) {
     const navigate = useNavigate()
-  
-    const order_id = customer.orders[0]?.id
-    
+
+    const order_id = Number(window.location.pathname.split('/').pop())  
+
     const order = customer.orders.find((order) => order.id === Number(order_id))
+    
+    
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
@@ -25,12 +26,13 @@ function Edit({ customer }) {
         onSubmit: (values) => {
             const quantity = Number(values.quantity)
 
+            // Make the API call to update the order
             fetch(`/cart/${order.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ item_id: item.id, quantity: quantity }),
+                body: JSON.stringify({ item_id: order.item.id, quantity: quantity }),
             })
                 .then((res) => {
                     if (!res.ok) {
@@ -40,12 +42,27 @@ function Edit({ customer }) {
                 })
                 .then((updatedData) => {
                     if (updatedData) {
+                        // Update the local state to reflect the changes immediately
+                        setCustomer((prevCustomer) => {
+                            const updatedOrders = prevCustomer.orders.map((existingOrder) =>
+                                existingOrder.id === order.id
+                                    ? { ...existingOrder, quantity: updatedData.quantity }
+                                    : existingOrder
+                            )
+
+                            return {
+                                ...prevCustomer,
+                                orders: updatedOrders,
+                            }
+                        })
+                        // Navigate back to the cart page after update
                         navigate('/cart')
                     }
                 })
                 .catch((e) => console.error(e))
         },
     })
+
     if (!customer || !Array.isArray(customer.orders)) {
         return <p>No orders found.</p>
     }
@@ -86,3 +103,4 @@ function Edit({ customer }) {
 }
 
 export default Edit
+

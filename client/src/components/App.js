@@ -49,24 +49,27 @@ function App() {
 
   }
 
+  function updateCustomerCart(newOrder) {
+    setCustomer(prev => ({
+      ...prev, orders: [...(prev.orders || []), newOrder]
+    })
+  )}
+
   return (
     <div>
 
       <Router>
         <ConditionNavbar customer={customer} />
         <Routes>
-          <Route path='/items' element={<Item customer={customer} setCustomer={setCustomer} />} />
-          <Route path='/items/:item_id' element={<ItemDetail customer={customer} />} />
+          <Route path='/items' element={<Item customer={customer} setCustomer={setCustomer} updateCustomerCart={updateCustomerCart} />} />
           <Route path='/login' element={<Login setCustomer={setCustomer} />} />
-          <Route path='/cart' element={<Cart customer={customer} setCustomer={setCustomer}/>} />
-          {/* <Route path='/cart/:order_id' element={<Edit customer={customer} />} /> */}
-          {/* <Route path="/confirmation" element={<Confirmation />} /> */}
+          <Route path='/cart' element={<Cart customer={customer} setCustomer={setCustomer} updateCustomerCart={updateCustomerCart}/>} />
           <Route path="/navbar" element={<NavBar customer={customer} />} />
-          <Route path='/signup' element={<Signup setCustomer={setCustomer} />} />
-          <Route path='/edit/:order_id' element={<Edit customer={customer} />} />
+          <Route path='/signup' element={<Signup setCustomer={setCustomer}/>} />
+          <Route path='/edit/:order_id' element={<Edit customer={customer} setCustomer={setCustomer}/>} />
           <Route path="/create-item" element={<CreateItem />} />
           
-          {/* <Route path='/cart/:order_id/edit' element={<Edit customer={customer} />} /> */}
+         
           
           
         </Routes>
