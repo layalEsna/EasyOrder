@@ -4,10 +4,10 @@ from flask_migrate import Migrate
 from flask_restful import Api, Resource
 
 
-# only logout
 
-from config import Config  # Import config class
-from models import db, bcrypt  # Now importing from models instead of defining in app.py
+
+from config import Config  
+from models import db, bcrypt  
 
 # Instantiate app
 app = Flask(__name__)
@@ -46,14 +46,6 @@ class Items(Resource):
         ]
         return all_items, 200
     
-# @app.before_request
-# def checked_if_logged_in():
-#     customer_id = session.get('customer_id')
-#     if not customer_id:
-#         return {'error': 'Unauthorized'}, 401
-#     if customer_id != 1:
-#         return {'error': 'You do not have permission to create items.'}, 403  
-
     
 class CreateItem(Resource):
     def post(self):
@@ -161,7 +153,6 @@ class CheckSession(Resource):
         else:
             return {'error': '401: Not Authorized'}, 401
         
-    # keep get for all items
 
 
 class Cart(Resource):
@@ -180,69 +171,13 @@ class Cart(Resource):
         item = Item.query.get(item_id)
         if not item:
             return {'message': 'Item not found'}, 404
-        # order_item = Order(customer_id=customer_id, quantity=quantity, item_id=item_id)
+       
         new_order = Order(customer_id=customer_id, quantity=quantity, item_id=item_id)
         db.session.add(new_order)
         
         db.session.commit()
 
         return {'message': 'New order added to the orders successfully.'}, 201
-    
-    
-
-    # def get(self, order_id=None):
-    #     customer_id = session.get('customer_id')
-    #     if not customer_id:
-    #         return {'error': 'You need to be logged in to view your cart.'}, 401
-        
-    #     if order_id:
-            
-    #         order = Order.query.filter(Order.id == order_id, Order.customer_id == customer_id).first()
-    #         if not order:
-    #             return {'error': 'Order not found.'}, 404
-            
-    #         item = Item.query.get(order.item_id)
-    #         if not item:
-    #             return {'error': 'Item not found.'}, 404
-    #         return {
-    #             'order_id': order.id,
-    #             'quantity': order.quantity,
-    #             'item_id': item.id,
-    #             'item_name': item.name,
-    #             'item_price': item.price,
-    #         }, 200
-    #     # extra
-
-            
-        
-    #     cart_items = Order.query.filter(Order.customer_id == customer_id).all()
-    #     # customer.orders
-    #     if not cart_items:
-    #         return {'message': 'Your cart is empty.'}, 200
-    #     # cart_data = [
-    #     #     {
-    #     #         'id': order.id,
-    #     #         'quantity': order.quantity,
-    #     #         'selected_item': order.item
-    #     #     }
-    #     #     for order in cart_items
-    #     # ]
-    #     cart_data = [
-    #         {
-    #             'id': order.id,
-    #             'quantity': order.quantity,
-    #             'selected_item': {
-    #                 'name': order.item.name,
-    #                 'price': order.item.price,
-    #             }
-    #         }
-    #         for order in cart_items
-    #     ]
-
-    #     return cart_data, 200
-    
-        
-
     
 class Logout(Resource):
     def delete(self):
@@ -269,24 +204,25 @@ class EditOrder(Resource):
                 setattr(order, attr, value)
         db.session.commit()
 
+        # return {
+        #     'id': order.id,
+        #     'quantity': order.quantity,
+        #     'item_id': order.item.id,
+        #     'item_name': order.item.name,
+        #     'item_price': order.item.price,
+        # }, 200
+
         return {
-            'order_id': order.id,
-            'quantity': order.quantity,
-            'item_id': order.item.id,
-            'item_name': order.item.name,
-            'item_price': order.item.price,
-        }, 200
-
-
-# {
-#     'id': order.id,
-#     'quantity': order.quantity,
-#     'item_id': order.item.id,
-#     'item': order.item,
-#     'customer_id': order.customer_id,
-
-
-# }
+    'id': order.id,
+    'quantity': order.quantity,
+    'item_id': order.item.id,
+    'item': {
+        'id': order.item.id,
+        'name': order.item.name,
+        'price': order.item.price,
+    },  
+    'customer_id': order.customer_id,
+}, 200
        
 
 class DeleteOrder(Resource):
@@ -336,13 +272,7 @@ api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Items, '/items')
 api.add_resource(Logout, '/logout')
-# api.add_resource(ItemById, '/items/<int:item_id>')
-# api.add_resource(CustomerById, '/customer/<int:customer_id>')
-# api.add_resource(Cart, '/cart', '/cart/<int:order_id>')
 api.add_resource(Cart, '/cart')
-
-# api.add_resource(Checkout, '/checkout')
-
 api.add_resource(EditOrder, '/cart/<int:order_id>')
 api.add_resource(DeleteOrder, '/cart/<int:order_id>/delete')
 api.add_resource(CreateItem, '/items')

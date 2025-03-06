@@ -8,6 +8,7 @@ function ItemDetail({item, updateCustomerCart}) {
     
         const [error, setError] = useState('')
 
+        
 
     const handleAddToCart = (quantity) => {
         fetch('/cart', {
