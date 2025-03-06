@@ -14,11 +14,17 @@ import CreateItem from "./CreateItem";
 
 function App() {
 
-  const [customer, setCustomer] = useState(null)
+  const [customer, setCustomer] = useState({
+    username: '',
+    orders: [],
+    id: null,
+    email: ''
+  })
 
 
   useEffect(() => {
     fetch('/check_session')
+      
       .then(res => {
         if (!res.ok) {
           throw new Error('Failed to fetch custome_id.')
@@ -26,9 +32,10 @@ function App() {
         return res.json()
       })
       .then(data => {
+        console.log("Session Data:", data)
         if (data.customer || data) {
           setCustomer(data.customer || data)
-        }
+                  }
       })
       .catch(e => console.error(e))
   }, [])
@@ -48,15 +55,15 @@ function App() {
       <Router>
         <ConditionNavbar customer={customer} />
         <Routes>
-          <Route path='/items' element={<Item customer={customer} />} />
+          <Route path='/items' element={<Item customer={customer} setCustomer={setCustomer} />} />
           <Route path='/items/:item_id' element={<ItemDetail customer={customer} />} />
           <Route path='/login' element={<Login setCustomer={setCustomer} />} />
-          <Route path='/cart' element={<Cart customer={customer} />} />
+          <Route path='/cart' element={<Cart customer={customer} setCustomer={setCustomer}/>} />
           {/* <Route path='/cart/:order_id' element={<Edit customer={customer} />} /> */}
-          <Route path="/confirmation" element={<Confirmation />} />
+          {/* <Route path="/confirmation" element={<Confirmation />} /> */}
           <Route path="/navbar" element={<NavBar customer={customer} />} />
           <Route path='/signup' element={<Signup setCustomer={setCustomer} />} />
-          <Route path='/edit/:order_id' element={<Edit customer={customer} />} />
+          {/* <Route path='/edit/:order_id' element={<Edit customer={customer} />} /> */}
           <Route path="/create-item" element={<CreateItem />} />
           
           {/* <Route path='/cart/:order_id/edit' element={<Edit customer={customer} />} /> */}

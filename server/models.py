@@ -25,7 +25,8 @@ bcrypt = Bcrypt()
 
 class Customer(db.Model, SerializerMixin):
     __tablename__ = 'customers'
-    serialize_only = ('id', 'username', 'email', 'items.name', 'items.price', 'orders.quantity')
+    # serialize_only = ('id', 'username', 'email', 'items.name', 'items.price', 'orders.quantity')
+    serialize_only = ('id', 'username', 'email', 'items', 'orders')
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
@@ -33,8 +34,9 @@ class Customer(db.Model, SerializerMixin):
     email = db.Column(db.String(100), unique=True, nullable=False)
     is_seller = db.Column(db.Boolean, default=False)
 
-    items = association_proxy('orders', 'item')
+    # items = association_proxy('orders', 'item')
     orders = db.relationship('Order', back_populates='customer')
+    items = db.relationship('Item', secondary='orders',viewonly=True)
 
     @validates('username')
     def validate_username(self,key, username):
@@ -81,8 +83,6 @@ class Item(db.Model, SerializerMixin):
     name = db.Column(db.String(100), nullable=False)
     price = db.Column(db.Float, nullable=False)
     
-
-
     customers = association_proxy('orders', 'customer')
     orders = db.relationship('Order', back_populates='item')
 
@@ -108,7 +108,9 @@ class Item(db.Model, SerializerMixin):
 
 class Order(db.Model, SerializerMixin):
     __tablename__ = 'orders'
-    serialize_only = ('id', 'customer_id', 'item_id', 'quantity', 'item.price', 'item.name')
+    
+    # serialize_only = ('id', 'customer_id', 'item_id', 'quantity', 'item.price', 'item.name')
+    serialize_only = ('id', 'customer_id', 'item_id', 'quantity', 'item')
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=False)

@@ -40,6 +40,7 @@ function CreateItem() {
 
                     navigate('/items')
                 })
+                
                 .catch(e => console.error(e))
         })
     })

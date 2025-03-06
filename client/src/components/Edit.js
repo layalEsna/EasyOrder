@@ -159,6 +159,7 @@ function Edit() {
                 .catch((e) => console.error(e))
         },
     })
+    
     if(!order) return <p>Loading...</p>
 
     return (

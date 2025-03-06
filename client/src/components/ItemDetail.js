@@ -3,29 +3,35 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 
-function ItemDetail({customer}) {
+function ItemDetail({customer, item, updateCustomerCart}) {
     const navigate = useNavigate() 
-    const { item_id } = useParams()
-    const [item, setItem] = useState(null)
+    // const { item_id } = useParams()
+    // const [item, setItem] = useState(null)
+    const [order, setOrder] = useState(null)
     const [quantity, setQuantity] = useState(1)
     const [error, setError] = useState('')
 
-    
-    useEffect(() => {
-        fetch(`/items/${item_id}`)
-            .then(res => {
-                if (!res.ok) {
-                throw new Error(`failed to fetch item ID: ${item_id}`)
-                }
-                return res.json()
-            })
-            .then(data => {
-                setItem(data)
-                
-            })
-        .catch(()=> setError('Failed to fetch item details'))
 
-    }, [item_id])
+    const handleAddToCart = (quantity) => {
+        fetch('/cart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: item.id, quantity }),
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.error) {
+                setError(data.error)
+            } else {
+                // add order to state
+                updateCustomerCart(data.order)
+                navigate('/cart')
+
+            }
+        })
+        .catch(() => setError('Failed to add item to cart'))
+    }
+
 
     const formik = useFormik({
         initialValues: {
@@ -36,28 +42,38 @@ function ItemDetail({customer}) {
                 .min(1, 'Quantity must be at least 1')
                 .max(5, 'Quantity must not exceed 5')
                 .required('Quantity is required'),
-            }),
+        }),
+
         onSubmit: (values) => {
-            const quantity = Number(values.quantity)
-            fetch('/cart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({item_id: item.id, quantity: quantity})
-            })
-            .then(res => res.json())
-                .then(data => {
-                    if (data.error) {
-                    setError(data.error)
-                    } else {
-                        navigate('/cart')
-                }
-            })
-                .catch(() => {
-                setError('Failed to add item to cart')
-            })
+            handleAddToCart(item.id, Number(values.quantity))
+            
         }
+        
+        
+
+
+
+        // onSubmit: (values) => {
+        //     const quantity = Number(values.quantity)
+        //     fetch('/cart', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({item_id: item.id, quantity: quantity})
+        //     })
+        //     .then(res => res.json())
+        //         .then(data => {
+        //             if (data.error) {
+        //             setError(data.error)
+        //             } else {
+        //                 navigate('/cart')
+        //         }
+        //     })
+        //         .catch(() => {
+        //         setError('Failed to add item to cart')
+        //     })
+        // }prev.orders 
     })
     if (error) {
         return <div>Error: {error}</div>
@@ -65,6 +81,9 @@ function ItemDetail({customer}) {
     if (!item) {
         return <div>Loading...</div>
     }
+
+
+        
 
     return (
         <div>
@@ -100,5 +119,6 @@ function ItemDetail({customer}) {
     )
 
 }
+
 
 export default ItemDetail

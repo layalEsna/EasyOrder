@@ -1,13 +1,13 @@
 
 
 import React, { useEffect, useState } from "react"
-import { useNavigate } from 'react-router-dom'
+import ItemDetail from "./ItemDetail"
 
 
-function Item({ customer }) {
+function Item({ customer, setCustomer }) {
 
     const [items, setItems] = useState([])
-    const navigate = useNavigate()
+    
     useEffect(() => {
         fetch('/items')
             .then(res => {
@@ -20,20 +20,31 @@ function Item({ customer }) {
                 setItems(data)
             })
             .catch()
+       
     }, [])
+
+    function updateCustomerCart(newOrder) {
+        setCustomer(prev => ({
+            ...prev, orders: [...prev.orders, newOrder]
+        }))
+    }
 
     return (
         <div>
+
 
             <h3>Welcome {customer ? customer.username : "Guest"}</h3>
 
             {
                 items.length > 0 ? (items.map(item => (
-                    <div key={item.id}>
-                        <h4>{item.name}</h4>
-                        <p>price: {item.price}</p>
-                        <button className='btn' onClick={() => navigate(`/items/${item.id}`)}>Select</button>
-                    </div>
+                    <ItemDetail
+                        key={item.id}                        
+                        item={item}
+                        customer={customer}
+                        updateCustomerCart={updateCustomerCart}
+                    />
+
+                    
                 ))) : (
                     <div>loading...</div>
                 )

@@ -39,6 +39,7 @@ function Signup({setCustomer}) {
                 .oneOf([Yup.ref('password'), null], 'Password must match.')
 
         }),
+        
         onSubmit: (values => {
 
             fetch('/signup', {
