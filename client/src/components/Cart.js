@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 function Cart({ customer, setCustomer }) {
     const navigate = useNavigate()
     const orders = Array.isArray(customer?.orders) ? customer.orders : []
-
+    
     console.log("Orders in Cart:", orders)
 
    
@@ -30,10 +30,14 @@ function Cart({ customer, setCustomer }) {
             })
             .then((updatedCartData) => {
                 console.log("Updated cart data:", updatedCartData)
-                setCustomer((prev) => ({
-                    ...prev,
-                    orders: Array.isArray(updatedCartData) ? updatedCartData : [],
-                }))
+                if (Array.isArray(updatedCartData)) {
+                    const updatedOrders = orders.filter(order => order.id !== order_id)
+                    setCustomer((prev) => ({
+                        ...prev,
+                        orders: updatedOrders,
+                    }))
+                }
+                
             })
             .catch((error) => {
                 console.error("Error deleting order:", error)

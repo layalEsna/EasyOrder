@@ -163,19 +163,7 @@ class CheckSession(Resource):
         
     # keep get for all items
 
-# class ItemById(Resource):
-#     def get(self, item_id):
 
-#         item = Item.query.get(item_id)
-#         if not item:
-#             return {'error': 'Item not found.'}, 404
-#         return item.to_dict(), 200
-#  
-# 
-#    # extra
-
-
-# class Order(Resource):
 class Cart(Resource):
 
     def post(self):
@@ -266,22 +254,6 @@ class Logout(Resource):
 
 class EditOrder(Resource):
     
-
-    # def get(self, order_id):
-
-    #     customer_id = session.get('customer_id')
-        
-    #     if not customer_id:
-    #         return {'message': 'You should be logged in to edit an item.'}, 401
-    #     order = Order.query.filter(Order.id == order_id, Order.customer_id == customer_id).first()
-    #     if not order:
-
-    #         return {'error': 'Item not found.'}, 404
-       
-    #     return order.to_dict(), 200
-    # # extra
-
-
     def patch(self, order_id):
         customer_id = session.get('customer_id')
         if not customer_id:
@@ -371,8 +343,8 @@ api.add_resource(Cart, '/cart')
 
 # api.add_resource(Checkout, '/checkout')
 
-# api.add_resource(EditOrder, '/cart/<int:order_id>')
-# api.add_resource(DeleteOrder, '/cart/<int:order_id>/delete')
+api.add_resource(EditOrder, '/cart/<int:order_id>')
+api.add_resource(DeleteOrder, '/cart/<int:order_id>/delete')
 api.add_resource(CreateItem, '/items')
 
 

@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 
-function ItemDetail({customer, item, updateCustomerCart}) {
+function ItemDetail({item, updateCustomerCart}) {
     const navigate = useNavigate() 
-    // const { item_id } = useParams()
-    // const [item, setItem] = useState(null)
-    const [order, setOrder] = useState(null)
-    const [quantity, setQuantity] = useState(1)
+    
+    // const [order, setOrder] = useState(null)
+    // const [quantity, setQuantity] = useState(1)
     const [error, setError] = useState('')
 
 
@@ -23,7 +22,7 @@ function ItemDetail({customer, item, updateCustomerCart}) {
             if (data.error) {
                 setError(data.error)
             } else {
-                // add order to state
+               
                 updateCustomerCart(data.order)
                 navigate('/cart')
 
@@ -50,30 +49,6 @@ function ItemDetail({customer, item, updateCustomerCart}) {
         }
         
         
-
-
-
-        // onSubmit: (values) => {
-        //     const quantity = Number(values.quantity)
-        //     fetch('/cart', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body: JSON.stringify({item_id: item.id, quantity: quantity})
-        //     })
-        //     .then(res => res.json())
-        //         .then(data => {
-        //             if (data.error) {
-        //             setError(data.error)
-        //             } else {
-        //                 navigate('/cart')
-        //         }
-        //     })
-        //         .catch(() => {
-        //         setError('Failed to add item to cart')
-        //     })
-        // }prev.orders 
     })
     if (error) {
         return <div>Error: {error}</div>
