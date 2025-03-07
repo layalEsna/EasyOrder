@@ -10,27 +10,33 @@ function ItemDetail({item, updateCustomerCart}) {
 
         
 
-    const handleAddToCart = (quantity) => {
+    function handleAddToCart(quantity) {
         fetch('/cart', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ item_id: item.id, quantity }),
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.error) {
-                setError(data.error)
-            } else {
-               
-                updateCustomerCart(data.order)
-                navigate('/cart')
-
-            }
+            .then(res => {
+                if (!res.ok) {
+                throw new Error('Failed to fetch data.')
+                }
+                return res.json()
         })
-        .catch(() => setError('Failed to add item to cart'))
+            .then(newOrder => {
+                console.log("New Order from API:", newOrder)
+                // updateCustomerCart(prev => [...prev, newOrder])
+                updateCustomerCart(newOrder)
+                console.log("Update Customer Cart called with:", newOrder);
+        
+                navigate('/cart')
+        })
+            .catch(e => {
+            setError(e.message)
+        })
     }
+        
 
-
+    
     const formik = useFormik({
         initialValues: {
             quantity: 1 

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Item from "./Item";
 import Login from "./Login";
-import ItemDetail from "./ItemDetail";
+// import ItemDetail from "./ItemDetail";
 import Cart from "./Cart";
-import Confirmation from "./Confirmation";
+// import Confirmation from "./Confirmation";
 
 import Signup from "./Signup";
 import NavBar from "./NavBar";
@@ -20,6 +20,7 @@ function App() {
     id: null,
     email: ''
   })
+  // const [cart, setCart] = useState([])
 
 
   useEffect(() => {
@@ -49,11 +50,24 @@ function App() {
 
   }
 
+  // function updateCustomerCart(newOrder) {
+  //   setCustomer(prev => ({
+      
+  //     ...prev, orders: [...(prev.orders || []), newOrder]
+  //   })
+  // )}
+
   function updateCustomerCart(newOrder) {
-    setCustomer(prev => ({
-      ...prev, orders: [...(prev.orders || []), newOrder]
-    })
-  )}
+    setCustomer(prev => {
+        console.log("Previous Orders:", prev.orders);
+        const updatedOrders = [...(prev.orders || []), newOrder];
+        console.log("Updated Orders:", updatedOrders);
+        return {
+            ...prev,
+            orders: updatedOrders,
+        };
+    });
+}
 
   return (
     <div>

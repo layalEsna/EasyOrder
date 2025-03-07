@@ -193,24 +193,20 @@ class EditOrder(Resource):
         customer_id = session.get('customer_id')
         if not customer_id:
             return {'message': 'You should be logged in to edit an item.'}, 401
-        order = Order.query.filter(Order.customer_id == customer_id, Order.id == order_id).first()
+        # order = Order.query.filter(Order.customer_id == customer_id, Order.id == order_id).first()
+        order = Order.query.filter_by(id=order_id, customer_id=customer_id).first()
+
         if not order:
             return {'error': 'Item not found.'}, 404
         data = request.get_json()
+
+        
         if not data:
             return {'error': 'No data provided for update.'}, 400
         for attr, value in data.items():
             if hasattr(order, attr):
                 setattr(order, attr, value)
         db.session.commit()
-
-        # return {
-        #     'id': order.id,
-        #     'quantity': order.quantity,
-        #     'item_id': order.item.id,
-        #     'item_name': order.item.name,
-        #     'item_price': order.item.price,
-        # }, 200
 
         return {
     'id': order.id,
@@ -243,7 +239,7 @@ class DeleteOrder(Resource):
         db.session.commit()
         
         cart_items = Order.query.filter(Order.customer_id == customer_id).all()
-         
+
         cart_data = [
             {
                 'id': order.id,
