@@ -10,6 +10,7 @@ import Signup from "./Signup";
 import NavBar from "./NavBar";
 import Edit from "./Edit";
 import CreateItem from "./CreateItem";
+import Customer from "./Customer";
 
 
 function App() {
@@ -82,6 +83,7 @@ function App() {
           <Route path='/signup' element={<Signup setCustomer={setCustomer}/>} />
           <Route path='/edit/:order_id' element={<Edit customer={customer} setCustomer={setCustomer}/>} />
           <Route path="/create-item" element={<CreateItem />} />
+          <Route path="/customers" element={<Customer />} />
           
          
           
