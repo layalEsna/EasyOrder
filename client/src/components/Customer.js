@@ -19,21 +19,24 @@ function Customer() {
     }, [])
     
     return (
-        <div>
+        <div className="list">
             {customers.length > 0 ? (
                 customers.map(customer => (
-                    <ul key={customer.id}>
-                        <li>{customer.username}</li>
+                    <div key={customer.id}>
+                        <h4>{customer.username}</h4>
                         <div>
                             {customer.orders && customer.orders.length > 0 ? (
                                 customer.orders.map(order => (
-                                    <ul key={order.id}>
-                                        <li>{order.item.name}</li>
-                                    </ul>
+                                    <div key={order.id}>
+                                        <p>Item Name: {order.item.name}</p>
+                                        
+                                    </div>
+                                    
                                 ))
                             ) : <p>No orders found!</p>}
+                            <div><p className="star">**********</p></div>
                         </div>
-                    </ul>
+                    </div>
                 ))
             ) : <p>No customers found!</p>}
         </div>
