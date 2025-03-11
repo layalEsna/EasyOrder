@@ -3,7 +3,7 @@
 
 import { useNavigate } from "react-router-dom"
 
-function Cart({ customer, setCustomer, updateCustomerCart }) {
+function Cart({ customer, setCustomer }) {
     const navigate = useNavigate()
     const orders = Array.isArray(customer?.orders) ? customer.orders : []
     
@@ -52,7 +52,7 @@ function Cart({ customer, setCustomer, updateCustomerCart }) {
 
     return (
         <div>
-            <h2>Your Cart</h2>
+            <h2>Your Orders</h2>
 
             {orders.length > 0 ? (
                 orders

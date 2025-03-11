@@ -87,7 +87,7 @@ function Signup({setCustomer}) {
 
     return (
         <div>
-            <h1>Create an Acount</h1>
+            <h1>Create an Account</h1>
 
             <form onSubmit={formik.handleSubmit}>
                 <div>
@@ -154,8 +154,8 @@ function Signup({setCustomer}) {
 
                 <div>
                     <button className='btn' type='submit'>signup</button>
-                    {/* <div className='signup_btn'> <span>Already have an account?</span>
-                    <button onClick={()=>navigate('/login')} className='btn' type='submit'>login</button></div> */}
+                    <div className='signup_btn'> <span>Already have an account? </span>
+                    <button onClick={()=>navigate('/login')} className='btn' type='submit'>login</button></div>
                 </div>
 
             </form>

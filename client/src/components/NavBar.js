@@ -34,10 +34,10 @@ function NavBar({customer}) {
         <nav>
 
 
-            <Link className='nav' to='/items'>Easy Order</Link>
-            <Link className='nav' to='/customers'>Customers</Link>
+            <Link className='nav' to='/items'>Items</Link>
+            <Link className='nav' to='/customer'>My Items</Link>
 
-            <Link className='nav' to='/cart'>Cart</Link>
+            <Link className='nav' to='/cart'>My Orders</Link>
             <Link className='nav' to='/create-item'>Create a New Item</Link>
             {customer ? (
                 <>

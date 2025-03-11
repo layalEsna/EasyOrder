@@ -23,10 +23,10 @@ function ItemDetail({item, updateCustomerCart}) {
                 return res.json()
         })
             .then(newOrder => {
-                console.log("New Order from API:", newOrder)
-                // updateCustomerCart(prev => [...prev, newOrder])
-                updateCustomerCart(newOrder)
-                console.log("Update Customer Cart called with:", newOrder);
+                
+                updateCustomerCart(prev => [...prev, newOrder])
+                // updateCustomerCart(newOrder)
+                
         
                 navigate('/cart')
         })

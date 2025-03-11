@@ -37,7 +37,7 @@ class Customer(db.Model, SerializerMixin):
     # items = association_proxy('orders', 'item')
     orders = db.relationship('Order', back_populates='customer')
     items = db.relationship('Item', secondary='orders',viewonly=True)
-
+# customer.items
     @validates('username')
     def validate_username(self,key, username):
         if not username or not isinstance(username, str):

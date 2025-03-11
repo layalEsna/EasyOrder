@@ -255,20 +255,8 @@ class DeleteOrder(Resource):
         ]
 
         return cart_data, 200
-class AllCustomers(Resource):
-    def get(self):
-        customers = Customer.query.all()
-        if not customers:
-            return {'message': 'There is no customer.'}, 200
-        return [customer.to_dict() for customer in customers], 200
-    
-class AllOrders(Resource):
-    def get(self):
-        orders = Order.query.all()
-        if not orders:
-            return {'message': 'There is no order.'}, 200
-        return [order.to_dict() for order in orders], 200
-    
+                 
+                 
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
@@ -284,8 +272,6 @@ api.add_resource(Cart, '/cart')
 api.add_resource(EditOrder, '/cart/<int:order_id>')
 api.add_resource(DeleteOrder, '/cart/<int:order_id>/delete')
 api.add_resource(CreateItem, '/items')
-api.add_resource(AllCustomers, '/customers')
-api.add_resource(AllOrders, '/orders')
 
 
 

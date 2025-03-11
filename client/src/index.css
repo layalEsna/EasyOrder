@@ -45,6 +45,10 @@ input {
   margin-top: 10px;
   margin-right: 20px;
 }
+.signup_btn {
+  margin-right: 190px;
+  margin-top: 20px;
+}
 
 .btn:hover {
   background-color: #0a1517;
@@ -109,6 +113,3 @@ input {
   color: red;
   
 }
-/* .list {
-  
-} */

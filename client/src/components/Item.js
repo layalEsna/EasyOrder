@@ -37,6 +37,7 @@ function Item({ customer, updateCustomerCart }) {
                         customer={customer}
                         updateCustomerCart={updateCustomerCart}
                     />
+                   
 
                     
                 ))) : (
@@ -49,3 +50,6 @@ function Item({ customer, updateCustomerCart }) {
 }
 
 export default Item
+
+
+
