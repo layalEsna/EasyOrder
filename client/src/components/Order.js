@@ -1,44 +1,56 @@
 
-
+// updateCustomerOrder
 
 import { useNavigate } from "react-router-dom"
 
-function Cart({ customer, setCustomer }) {
+function Order({ customer, setCustomer }) {
     const navigate = useNavigate()
     const orders = Array.isArray(customer?.orders) ? customer.orders : []
-    
-    console.log("Orders in Cart:", orders)
 
-   
+
     const totalPrice = orders
-        .filter(order => order && order.item && typeof order.item.price === 'number') 
+        .filter(order => order && order.item && typeof order.item.price === 'number')
         .reduce((total, order) => {
             return total + (order.item.price * order.quantity)
         }, 0)
 
-    function handleDelete(order_id) {
+    
 
-        fetch(`/cart/${order_id}/delete`, {
+    function handleDelete(order_id) {
+        fetch(`/orders/${order_id}/delete`, {
             method: 'DELETE',
         })
             .then((res) => {
                 if (!res.ok) {
-                    return res.json().then((err) => {
-                        throw new Error(err.error || 'Failed to delete order.')
-                    })
+                    throw new Error('Failed to fetch data.')
                 }
                 return res.json()
+                
             })
             .then((updatedCartData) => {
-                console.log("Updated cart data:", updatedCartData)
-                if (Array.isArray(updatedCartData)) {
-                    const updatedOrders = orders.filter(order => order.id !== order_id)
-                    setCustomer((prev) => ({
-                        ...prev,
-                        orders: updatedOrders,
-                    }))
-                }
                 
+
+                if (Array.isArray(updatedCartData)) {
+                    setCustomer((prev) => {
+                        
+                        const updatedOrders = prev.orders.filter(order => order.id !== order_id)
+                        const deletedOrder = prev.orders.find(order => order.id === order_id)
+                        const deletedItemId = deletedOrder ? deletedOrder.item_id : null
+
+                        const updatedItems = deletedItemId
+                            ? prev.items.filter(item =>
+                                item.id !== deletedItemId ||
+                                updatedOrders.some(order => order.item_id === deletedItemId)
+                            )
+                            : prev.items
+
+                        return {
+                            ...prev,
+                            orders: updatedOrders,
+                            items: updatedItems,
+                        }
+                    })
+                }
             })
             .catch((error) => {
                 console.error("Error deleting order:", error)
@@ -56,9 +68,9 @@ function Cart({ customer, setCustomer }) {
 
             {orders.length > 0 ? (
                 orders
-                    .filter(order => order && order.item) 
+                    .filter(order => order && order.item)
                     .map((order) => {
-                        
+
                         return (
                             <div key={order.id}>
                                 <h3>{order.item.name || "Unknown Item"}</h3>
@@ -75,10 +87,10 @@ function Cart({ customer, setCustomer }) {
                         )
                     })
             ) : (
-                <p>Your Cart Is Empty</p>
+                <p>No Orders</p>
             )}
 
-            
+
             {orders.length > 0 && (
                 <h3>Total: ${totalPrice.toFixed(2)}</h3>
             )}
@@ -86,4 +98,4 @@ function Cart({ customer, setCustomer }) {
     )
 }
 
-export default Cart
+export default Order

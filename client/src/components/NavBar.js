@@ -37,7 +37,7 @@ function NavBar({customer}) {
             <Link className='nav' to='/items'>Items</Link>
             <Link className='nav' to='/customer'>My Items</Link>
 
-            <Link className='nav' to='/cart'>My Orders</Link>
+            <Link className='nav' to='/orders'>My Orders</Link>
             <Link className='nav' to='/create-item'>Create a New Item</Link>
             {customer ? (
                 <>

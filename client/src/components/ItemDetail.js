@@ -2,44 +2,40 @@ import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
+// cart
+function ItemDetail({ item, updateCustomerOrder }) {
+    const navigate = useNavigate()
 
-function ItemDetail({item, updateCustomerCart}) {
-    const navigate = useNavigate() 
-    
-        const [error, setError] = useState('')
+    const [error, setError] = useState('')
 
-        
+
 
     function handleAddToCart(quantity) {
-        fetch('/cart', {
+        fetch('/orders', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ item_id: item.id, quantity }),
         })
             .then(res => {
                 if (!res.ok) {
-                throw new Error('Failed to fetch data.')
+                    throw new Error('Failed to fetch data.')
                 }
                 return res.json()
-        })
+            })
             .then(newOrder => {
-                
-                updateCustomerCart(prev => [...prev, newOrder])
-                // updateCustomerCart(newOrder)
-                
-        
-                navigate('/cart')
-        })
+                updateCustomerOrder(newOrder, item)
+                navigate('/orders')
+            })
             .catch(e => {
-            setError(e.message)
-        })
+                setError(e.message)
+            })
     }
-        
 
-    
+
+
     const formik = useFormik({
         initialValues: {
-            quantity: 1 
+            quantity: 1
         },
         validationSchema: Yup.object({
             quantity: Yup.number()
@@ -49,11 +45,11 @@ function ItemDetail({item, updateCustomerCart}) {
         }),
 
         onSubmit: (values) => {
-            
+
             handleAddToCart(Number(values.quantity))
         }
-        
-        
+
+
     })
     if (error) {
         return <div>Error: {error}</div>
@@ -63,11 +59,11 @@ function ItemDetail({item, updateCustomerCart}) {
     }
 
 
-        
+
 
     return (
         <div>
-           
+
             <h2>{item.name}</h2>
             <p>Price: ${item.price.toFixed(2)}</p>
 
@@ -85,14 +81,14 @@ function ItemDetail({item, updateCustomerCart}) {
                     <option value='3'>3</option>
                     <option value='4'>4</option>
                     <option value='5'>5</option>
-                    
+
                 </select>
                 {formik.errors.quantity && formik.touched.quantity && (
                     <div className="error">{formik.errors.quantity}</div>
                 )}
 
 
-                <button className='btn' type="submit">Add to Cart</button>
+                <button className='btn' type="submit">Add to Ordes</button>
 
             </form>
         </div>

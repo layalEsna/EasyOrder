@@ -3,7 +3,7 @@
 import { useNavigate } from "react-router-dom"
 import { useFormik } from "formik"
 import * as Yup from "yup"
-
+// cart
 function Edit({ customer, setCustomer }) {
     const navigate = useNavigate()
 
@@ -27,7 +27,7 @@ function Edit({ customer, setCustomer }) {
             const quantity = Number(values.quantity)
 
             // Make the API call to update the order
-            fetch(`/cart/${order.id}`, {
+            fetch(`/orders/${order.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ function Edit({ customer, setCustomer }) {
                             }
                         })
                         // Navigate back to the cart page after update
-                        navigate('/cart')
+                        navigate('/orders')
                     }
                 })
                 .catch((e) => console.error(e))
@@ -96,7 +96,7 @@ function Edit({ customer, setCustomer }) {
                     <div className="error">{formik.errors.quantity}</div>
                 )}
 
-                <button className="btn" type="submit">Back to the cart</button>
+                <button className="btn" type="submit">Back To The Orders</button>
             </form>
         </div>
     )

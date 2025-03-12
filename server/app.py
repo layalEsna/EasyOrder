@@ -155,7 +155,7 @@ class CheckSession(Resource):
         
 
 
-class Cart(Resource):
+class OrderResource(Resource):
 
     def post(self):
 
@@ -177,7 +177,7 @@ class Cart(Resource):
         
         db.session.commit()
 
-        return {'message': 'New order added to the orders successfully.'}, 201
+        return new_order.to_dict(), 201
     
 class Logout(Resource):
     def delete(self):
@@ -193,7 +193,7 @@ class EditOrder(Resource):
         customer_id = session.get('customer_id')
         if not customer_id:
             return {'message': 'You should be logged in to edit an item.'}, 401
-        # order = Order.query.filter(Order.customer_id == customer_id, Order.id == order_id).first()
+        
         order = Order.query.filter_by(id=order_id, customer_id=customer_id).first()
 
         if not order:
@@ -255,8 +255,36 @@ class DeleteOrder(Resource):
         ]
 
         return cart_data, 200
-                 
-                 
+
+
+class DeleteItem(Resource):
+    def delete(self, item_id):
+        customer_id = session.get('customer_id')
+        if customer_id != 1:
+            return {'error':'You are not allowed to delete an item.'}, 401
+        item = Item.query.filter(Item.id == item_id).first()
+        db.session.delete(item)
+        db.session.commit()
+
+        return {'message': 'Item deleted successfully.'}, 200
+
+class DeleteCustomer(Resource):
+    def delete(self, customer_id):
+        customer_id = session.get('customer_id')  
+        if not customer_id:
+            return {'error': 'Unauthorized.'}, 401
+        customer = Customer.query.filter(Customer.id == customer_id).first()
+        if not customer:
+            return {'error': 'Customer not found.'}, 404
+        db.session.delete(customer)
+        db.session.commit()
+        return {'message': 'Customer deleted successfully.'}, 200
+            
+
+
+
+
+
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
@@ -268,9 +296,9 @@ api.add_resource(Login, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(Items, '/items')
 api.add_resource(Logout, '/logout')
-api.add_resource(Cart, '/cart')
-api.add_resource(EditOrder, '/cart/<int:order_id>')
-api.add_resource(DeleteOrder, '/cart/<int:order_id>/delete')
+api.add_resource(OrderResource, '/orders')
+api.add_resource(EditOrder, '/orders/<int:order_id>')
+api.add_resource(DeleteOrder, '/orders/<int:order_id>/delete')
 api.add_resource(CreateItem, '/items')
 
 

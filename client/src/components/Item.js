@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react"
 import ItemDetail from "./ItemDetail"
+// cart
 
-
-function Item({ customer, updateCustomerCart }) {
+function Item({ customer, updateCustomerOrder }) {
 
     const [items, setItems] = useState([])
     
@@ -35,7 +35,7 @@ function Item({ customer, updateCustomerCart }) {
                         key={item.id}                        
                         item={item}
                         customer={customer}
-                        updateCustomerCart={updateCustomerCart}
+                        updateCustomerOrder={updateCustomerOrder}
                     />
                    
 
